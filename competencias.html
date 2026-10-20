@@ -1,0 +1,1090 @@
+<!doctype html><html><head><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1b2a4a"><link rel="apple-touch-icon" href="./icon-192.png"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Mapa das Competências</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700;800&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: sticky court nav over a single scroll; each court is a color-coded section with Originária > Recurso ordinário > Recurso extraordinário/especial */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --fg:#1d2430; --muted:#5d6878; --line:#dde2ea;
+  --stf:#7a2335; --stf-soft:#f6e9ec;
+  --stj:#0f5e6e; --stj-soft:#e3f1f3;
+  --trf:#8a5a12; --trf-soft:#f7eedd;
+  --jf:#2f6a3a; --jf-soft:#e6f2e7;
+  --cnj:#43507a; --cnj-soft:#e8ebf5;
+  --warn:#a23b1c; --warn-soft:#fbebe5;
+  --display:"Bitter",Georgia,serif;
+  --body:"Nunito Sans",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161d; --surface:#1a2029; --fg:#e6e9ef; --muted:#9aa4b3; --line:#2b3340;
+  --stf:#e48a9b; --stf-soft:#2e1c22; --stj:#6cc4d3; --stj-soft:#16292d;
+  --trf:#e0b062; --trf-soft:#2c2416; --jf:#86c992; --jf-soft:#1a2a1d;
+  --cnj:#a5b2e0; --cnj-soft:#1f2433; --warn:#f0906f; --warn-soft:#30201a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161d; --surface:#1a2029; --fg:#e6e9ef; --muted:#9aa4b3; --line:#2b3340;
+  --stf:#e48a9b; --stf-soft:#2e1c22; --stj:#6cc4d3; --stj-soft:#16292d;
+  --trf:#e0b062; --trf-soft:#2c2416; --jf:#86c992; --jf-soft:#1a2a1d;
+  --cnj:#a5b2e0; --cnj-soft:#1f2433; --warn:#f0906f; --warn-soft:#30201a; color-scheme:dark}
+
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15.5px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.2}
+
+header.top{padding-block:40px 24px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+header.top h1{font-size:clamp(28px,5vw,42px);font-weight:800;margin-top:8px}
+header.top p{max-width:64ch;color:var(--muted);margin:12px 0 0}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.legend span{font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px}
+
+nav.courts{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+nav.courts .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:8px;scrollbar-width:none}
+nav.courts a{flex:none;text-decoration:none;font-weight:700;font-size:14px;padding:7px 12px;border-radius:8px;color:var(--fg)}
+nav.courts a:hover,nav.courts a:focus-visible{background:var(--bg);outline:none}
+nav.courts a i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:1px}
+
+section.court{padding-block:40px 8px;scroll-margin-top:60px}
+.court-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;padding-bottom:14px;border-bottom:3px solid var(--c)}
+.court-head h2{font-size:clamp(24px,4vw,32px);color:var(--c)}
+.court-head .art{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.court-head .role{flex-basis:100%;color:var(--muted);margin:0}
+
+.compo{margin-top:18px;background:var(--soft);border-radius:12px;padding:14px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 24px}
+.compo div{min-width:0}
+.compo b{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--c);font-weight:500}
+
+.tier{margin-top:28px}
+.tier-label{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.tier-label .tag{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--surface);background:var(--c);padding:3px 9px;border-radius:5px}
+.tier-label h3{font-size:19px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;min-width:0}
+.box h4{font-size:15.5px;color:var(--c);margin-bottom:8px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.box h4 small{font-family:var(--mono);font-size:11.5px;color:var(--muted);font-weight:500;white-space:nowrap}
+.box ul{margin:0;padding-left:18px}
+.box li{margin:4px 0}
+.box li::marker{color:var(--c)}
+.box p{margin:6px 0 0}
+.sub{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:10px 0 2px}
+.sub:first-of-type{margin-top:0}
+.al{font-family:var(--mono);font-size:12px;color:var(--c);background:var(--soft);padding:0 5px;border-radius:4px;white-space:nowrap}
+.hl{background:var(--soft);font-weight:700;padding:0 3px;border-radius:3px}
+
+.note{margin-top:12px;border-left:4px solid var(--warn);background:var(--warn-soft);padding:10px 14px;border-radius:0 10px 10px 0;font-size:14.5px}
+.note b{color:var(--warn)}
+
+.c-stf{--c:var(--stf);--soft:var(--stf-soft)}
+.c-stj{--c:var(--stj);--soft:var(--stj-soft)}
+.c-trf{--c:var(--trf);--soft:var(--trf-soft)}
+.c-jf{--c:var(--jf);--soft:var(--jf-soft)}
+.c-cnj{--c:var(--cnj);--soft:var(--cnj-soft)}
+.c-warn{--c:var(--warn);--soft:var(--warn-soft)}
+
+/* fluxo recursal */
+.flow{margin-top:18px;overflow-x:auto}
+.flow svg{display:block;min-width:640px;width:100%;height:auto}
+.flow text{font-family:var(--body);font-size:13px;fill:var(--fg)}
+.flow .t{font-family:var(--display);font-weight:700;font-size:15px}
+
+.tbl{overflow-x:auto;margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:520px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:500}
+tr:last-child td{border-bottom:none}
+td.who{font-weight:700;white-space:nowrap}
+.pill{display:inline-block;font-size:12.5px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--soft);color:var(--c)}
+
+/* lado a lado */
+.cmp-list{display:grid;gap:18px;margin-top:20px}
+.cmp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.cmp > h3{font-size:17.5px;margin-bottom:4px}
+.cmp > .q{color:var(--muted);font-size:14px;margin:0 0 14px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.col{border-top:4px solid var(--c);background:var(--soft);border-radius:4px 4px 10px 10px;padding:12px 14px;min-width:0}
+.col .who{font-family:var(--display);font-weight:800;color:var(--c);font-size:15px;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.col .who small{font-family:var(--mono);font-weight:500;font-size:11px;color:var(--muted)}
+.col ul{margin:0;padding-left:17px}
+.col li{margin:3px 0}
+.col p{margin:0}
+.key{margin-top:12px;display:flex;gap:10px;align-items:flex-start;font-size:14.5px}
+.key b.k{flex:none;font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:500;color:var(--surface);background:var(--fg);padding:3px 8px;border-radius:5px;margin-top:2px}
+.c-none{--c:var(--muted);--soft:var(--bg)}
+.fix{margin-top:16px;border-left:4px solid var(--stj);background:var(--stj-soft);padding:12px 16px;border-radius:0 10px 10px 0}
+
+footer{padding-block:40px 56px;color:var(--muted);font-size:13px}
+@media (max-width:480px){.grid{grid-template-columns:1fr}}
+</style>
+
+<header class="top wrap">
+  <div class="eyebrow">CF/88 · arts. 101 a 110</div>
+  <h1>Mapa das Competências</h1>
+  <p>Cada órgão em três camadas: o que julga <b>originariamente</b>, o que recebe em <b>recurso ordinário</b> e o que recebe em <b>recurso extraordinário ou especial</b>. Dentro da originária, as alíneas foram reagrupadas por assunto.</p>
+  <div class="legend">
+    <span class="c-stf" style="background:var(--soft);color:var(--c)">STF</span>
+    <span class="c-stj" style="background:var(--soft);color:var(--c)">STJ</span>
+    <span class="c-trf" style="background:var(--soft);color:var(--c)">TRF</span>
+    <span class="c-jf" style="background:var(--soft);color:var(--c)">Juiz federal</span>
+    <span class="c-cnj" style="background:var(--soft);color:var(--c)">CNJ</span>
+  </div>
+</header>
+
+<nav class="courts" aria-label="Órgãos">
+  <div class="wrap">
+    <a href="#stf"><i style="background:var(--stf)"></i>STF</a>
+    <a href="#stj"><i style="background:var(--stj)"></i>STJ</a>
+    <a href="#trf"><i style="background:var(--trf)"></i>TRFs</a>
+    <a href="#jf"><i style="background:var(--jf)"></i>Juízes federais</a>
+    <a href="#cnj"><i style="background:var(--cnj)"></i>CNJ</a>
+    <a href="#fluxo"><i style="background:var(--muted)"></i>Fluxo recursal</a>
+    <a href="#ladoalado"><i style="background:var(--fg)"></i>Lado a lado</a>
+    <a href="#pegadinhas"><i style="background:var(--warn)"></i>Pegadinhas</a>
+  </div>
+</nav>
+
+<main>
+<!-- ================= STF ================= -->
+<section id="stf" class="court c-stf wrap">
+  <div class="court-head">
+    <h2>Supremo Tribunal Federal</h2><span class="art">arts. 101 a 103-A</span>
+    <p class="role">Guardião da Constituição.</p>
+  </div>
+
+  <div class="compo">
+    <div><b>Tamanho</b>11 Ministros (número fixo)</div>
+    <div><b>Idade</b>Mais de 35 e menos de 70 anos</div>
+    <div><b>Requisitos</b>Cidadão de notável saber jurídico e reputação ilibada</div>
+    <div><b>Nomeação</b>Presidente, após maioria absoluta do Senado <span class="al">art. 101</span></div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">I</span><h3>Competência originária</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>Controle concentrado <small>I, a · p · §§1º-2º</small></h4>
+        <ul>
+          <li><b>ADI</b> de lei ou ato normativo <span class="hl">federal ou estadual</span></li>
+          <li><b>ADC</b> de lei ou ato normativo <span class="hl">só federal</span></li>
+          <li>Medida cautelar em ADI <span class="al">p</span></li>
+          <li><b>ADPF</b>, na forma da lei <span class="al">§1º</span></li>
+          <li>Mérito de ADI/ADC: eficácia contra todos e efeito vinculante para Judiciário e Administração direta e indireta das três esferas <span class="al">§2º</span></li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <h4>Penal: foro por prerrogativa <small>I, b · c · g</small></h4>
+        <div class="sub">Só crimes comuns <span class="al">b</span></div>
+        <ul><li>Presidente e Vice</li><li>Membros do Congresso Nacional</li><li>Ministros do STF</li><li>PGR</li></ul>
+        <div class="sub">Crimes comuns e de responsabilidade <span class="al">c</span></div>
+        <ul>
+          <li>Ministros de Estado e Comandantes das Forças Armadas (ressalvado art. 52, I)</li>
+          <li>Membros dos Tribunais Superiores</li>
+          <li>Membros do TCU</li>
+          <li>Chefes de missão diplomática permanente</li>
+        </ul>
+        <div class="sub">Outros</div>
+        <ul><li>Extradição solicitada por Estado estrangeiro <span class="al">g</span></li></ul>
+      </div>
+
+      <div class="box">
+        <h4>Remédios constitucionais <small>I, d · i · q</small></h4>
+        <div class="sub">Habeas corpus</div>
+        <ul>
+          <li>Paciente: autoridades das alíneas b e c <span class="al">d</span></li>
+          <li>Coator: Tribunal Superior <span class="al">i</span></li>
+          <li>Coator ou paciente sujeito diretamente à jurisdição do STF <span class="al">i</span></li>
+          <li>Crime sujeito ao STF em única instância <span class="al">i</span></li>
+        </ul>
+        <div class="sub">MS e HD contra atos de <span class="al">d</span></div>
+        <ul><li>Presidente da República, Mesas da Câmara e do Senado, TCU, PGR e o próprio STF</li></ul>
+        <div class="sub">Mandado de injunção <span class="al">q</span></div>
+        <ul><li>Norma a cargo de: Presidente, Congresso, Câmara, Senado, Mesas, TCU, Tribunais Superiores ou STF</li></ul>
+      </div>
+
+      <div class="box">
+        <h4>Conflitos e litígios de cúpula <small>I, e · f · o</small></h4>
+        <ul>
+          <li>Estado estrangeiro ou organismo internacional <b>x</b> União, Estado, DF ou Território <span class="al">e</span></li>
+          <li>Conflito federativo: União x Estados, União x DF, ou entre eles, inclusive administração indireta <span class="al">f</span></li>
+          <li>Conflito de competência <span class="al">o</span>: STJ x qualquer tribunal; Tribunal Superior x Tribunal Superior; Tribunal Superior x qualquer outro tribunal</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <h4>Defesa dos próprios julgados <small>I, j · l · m</small></h4>
+        <ul>
+          <li>Revisão criminal e rescisória de seus julgados <span class="al">j</span></li>
+          <li>Reclamação para preservar competência e autoridade das decisões <span class="al">l</span></li>
+          <li>Execução de sentença das causas originárias, podendo delegar atos <span class="al">m</span></li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <h4>Magistratura e conselhos <small>I, n · r</small></h4>
+        <ul>
+          <li>Ação em que <b>todos</b> os membros da magistratura sejam interessados <span class="al">n</span></li>
+          <li>Ação em que <b>mais da metade</b> do tribunal de origem esteja impedida ou interessada <span class="al">n</span></li>
+          <li>Ações contra o <b>CNJ</b> e o <b>CNMP</b> <span class="al">r</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">II</span><h3>Recurso ordinário</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>Remédios denegados <small>II, a</small></h4>
+        <p>HC, MS, HD e MI decididos em <span class="hl">única instância pelos Tribunais Superiores</span>, quando <b>denegatória</b> a decisão.</p>
+      </div>
+      <div class="box">
+        <h4>Crime político <small>II, b</small></h4>
+        <p>Sentença do juiz federal vai direto ao STF, sem passar pelo TRF.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">III</span><h3>Recurso extraordinário</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>Cabe quando a decisão <small>III, a a d</small></h4>
+        <ul>
+          <li>Contrariar a CF</li>
+          <li>Declarar inconstitucional tratado ou lei federal</li>
+          <li>Julgar válida lei ou ato de governo local contestado em face da CF</li>
+          <li>Julgar válida <span class="hl">lei local</span> contestada em face de <span class="hl">lei federal</span></li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Requisitos <small>§3º</small></h4>
+        <ul>
+          <li>Causa decidida em única ou última instância, por <b>qualquer órgão</b>, inclusive turma recursal</li>
+          <li>Demonstrar <b>repercussão geral</b></li>
+          <li>Recusa só por <b>2/3</b> dos membros</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">Controle</span><h3>Legitimados e rito da ADI/ADC</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>Quem pode propor <small>art. 103</small></h4>
+        <div class="sub">Federais</div>
+        <ul>
+          <li>Presidente da República <span class="al">I</span></li>
+          <li>Mesa do Senado <span class="al">II</span></li>
+          <li>Mesa da Câmara <span class="al">III</span></li>
+          <li>PGR <span class="al">VI</span></li>
+        </ul>
+        <div class="sub">Estaduais e distritais</div>
+        <ul>
+          <li>Mesa de Assembleia Legislativa ou da Câmara Legislativa do DF <span class="al">IV</span></li>
+          <li>Governador de Estado ou do DF <span class="al">V</span></li>
+        </ul>
+        <div class="sub">Sociedade civil</div>
+        <ul>
+          <li>Conselho Federal da OAB <span class="al">VII</span></li>
+          <li>Partido político com representação no Congresso <span class="al">VIII</span></li>
+          <li>Confederação sindical ou entidade de classe de âmbito nacional <span class="al">IX</span></li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <h4>Atores do processo <small>art. 103, §§1º-3º</small></h4>
+        <ul>
+          <li><b>PGR</b>: ouvido previamente nas ações de inconstitucionalidade e em <span class="hl">todos</span> os processos do STF <span class="al">§1º</span></li>
+          <li><b>AGU</b>: citado previamente quando se aprecia a inconstitucionalidade em tese; <span class="hl">defende</span> o ato ou texto impugnado <span class="al">§3º</span></li>
+        </ul>
+        <div class="sub">Inconstitucionalidade por omissão <span class="al">§2º</span></div>
+        <ul>
+          <li>Ciência ao Poder competente para adotar as providências</li>
+          <li>Se for <b>órgão administrativo</b>: prazo de <span class="hl">30 dias</span></li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <h4>Súmula vinculante <small>art. 103-A</small></h4>
+        <ul>
+          <li>De ofício ou por provocação, por <span class="hl">2/3</span> dos membros, após reiteradas decisões sobre matéria constitucional</li>
+          <li>Efeito vinculante a partir da publicação na imprensa oficial, para o Judiciário e a Administração direta e indireta das três esferas</li>
+          <li>Objeto: validade, interpretação e eficácia de normas determinadas, com controvérsia atual que gere grave insegurança jurídica e multiplicação de processos <span class="al">§1º</span></li>
+          <li>Podem provocar aprovação, revisão ou cancelamento os <b>legitimados da ADI</b>, sem prejuízo da lei <span class="al">§2º</span></li>
+          <li>Ato ou decisão que contrariar ou aplicar indevidamente: <b>reclamação ao STF</b>, que anula o ato administrativo ou cassa a decisão judicial <span class="al">§3º</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="note"><b>Jurisprudência do STF:</b> Mesa de Assembleia ou da Câmara Legislativa, Governador e confederação sindical ou entidade de classe são legitimados <b>especiais</b> e precisam demonstrar pertinência temática. Os demais são universais. Isso não está escrito no art. 103, mas cai muito.</div>
+  </div>
+</section>
+
+<!-- ================= STJ ================= -->
+<section id="stj" class="court c-stj wrap">
+  <div class="court-head">
+    <h2>Superior Tribunal de Justiça</h2><span class="art">arts. 104 e 105</span>
+    <p class="role">Guardião da lei federal.</p>
+  </div>
+
+  <div class="compo">
+    <div><b>Tamanho</b>No mínimo 33 Ministros</div>
+    <div><b>Idade</b>Mais de 35 e menos de 70 anos</div>
+    <div><b>Nomeação</b>Presidente, após maioria absoluta do Senado</div>
+    <div><b>Origem</b>1/3 juízes de TRF · 1/3 desembargadores de TJ (lista tríplice do STJ) · 1/3 advogados e MP, alternadamente (art. 94)</div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">I</span><h3>Competência originária</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>Penal: foro por prerrogativa <small>I, a</small></h4>
+        <div class="sub">Só crimes comuns</div>
+        <ul><li>Governadores dos Estados e do DF</li></ul>
+        <div class="sub">Crimes comuns e de responsabilidade</div>
+        <ul>
+          <li>Desembargadores dos TJs</li>
+          <li>Membros dos TCEs e do TCDF</li>
+          <li>Membros dos TRFs, TREs e TRTs</li>
+          <li>Membros dos Conselhos ou Tribunais de Contas dos Municípios</li>
+          <li>Membros do MPU que oficiem perante tribunais</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <h4>Remédios constitucionais <small>I, b · c · h</small></h4>
+        <div class="sub">MS e HD contra ato de <span class="al">b</span></div>
+        <ul><li>Ministro de Estado, Comandantes das Forças Armadas ou o próprio STJ</li></ul>
+        <div class="sub">Habeas corpus <span class="al">c</span></div>
+        <ul>
+          <li>Coator ou paciente: autoridades da alínea a</li>
+          <li>Coator: tribunal sujeito à sua jurisdição, Ministro de Estado ou Comandante</li>
+          <li>Ressalvada a Justiça Eleitoral</li>
+        </ul>
+        <div class="sub">Mandado de injunção <span class="al">h</span></div>
+        <ul><li>Norma a cargo de órgão, entidade ou autoridade federal, salvo casos do STF e das Justiças Militar, Eleitoral, do Trabalho e Federal</li></ul>
+      </div>
+
+      <div class="box">
+        <h4>Conflitos <small>I, d · g · j</small></h4>
+        <div class="sub">De competência <span class="al">d</span></div>
+        <ul>
+          <li>Entre quaisquer tribunais (ressalvado o STF)</li>
+          <li>Tribunal x juízes a ele não vinculados</li>
+          <li>Juízes vinculados a tribunais diversos</li>
+        </ul>
+        <div class="sub">De atribuições <span class="al">g</span></div>
+        <ul>
+          <li>Autoridade administrativa x judiciária da União</li>
+          <li>Judiciária de um Estado x administrativa de outro ou do DF</li>
+          <li>Entre as do DF e as da União</li>
+        </ul>
+        <div class="sub">Tributário <span class="al">j</span></div>
+        <ul><li>Entes federativos entre si ou com o Comitê Gestor do IBS, sobre IBS e CBS (EC 132/2023)</li></ul>
+      </div>
+
+      <div class="box">
+        <h4>Defesa dos próprios julgados <small>I, e · f</small></h4>
+        <ul>
+          <li>Revisão criminal e rescisória de seus julgados</li>
+          <li>Reclamação para preservar competência e autoridade das decisões</li>
+        </ul>
+        <h4 style="margin-top:14px">Cooperação internacional <small>I, i</small></h4>
+        <ul>
+          <li>Homologação de sentença estrangeira</li>
+          <li>Exequatur às cartas rogatórias</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">II</span><h3>Recurso ordinário</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>HC denegado <small>II, a</small></h4>
+        <p>Decidido em <span class="hl">única ou última</span> instância por TRF ou TJ.</p>
+      </div>
+      <div class="box">
+        <h4>MS denegado <small>II, b</small></h4>
+        <p>Decidido em <span class="hl">única</span> instância por TRF ou TJ.</p>
+      </div>
+      <div class="box">
+        <h4>Causa internacional <small>II, c</small></h4>
+        <p>Estado estrangeiro ou organismo internacional <b>x</b> Município ou pessoa residente/domiciliada no País.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">III</span><h3>Recurso especial</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>Cabe quando a decisão <small>III, a a c</small></h4>
+        <ul>
+          <li>Contrariar tratado ou lei federal, ou negar-lhes vigência</li>
+          <li>Julgar válido <span class="hl">ato</span> de governo local contestado em face de lei federal</li>
+          <li>Der à lei federal interpretação divergente de outro tribunal</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Requisitos <small>§§2º-3º</small></h4>
+        <ul>
+          <li>Causa decidida em única ou última instância <b>por TRF ou TJ</b> (não cabe de turma recursal)</li>
+          <li>Demonstrar <b>relevância</b>; recusa só por <b>2/3</b> do órgão julgador</li>
+        </ul>
+        <div class="sub">Relevância presumida</div>
+        <ul>
+          <li>Ações penais</li>
+          <li>Improbidade administrativa</li>
+          <li>Valor da causa acima de 500 salários mínimos</li>
+          <li>Ações que possam gerar inelegibilidade</li>
+          <li>Acórdão contrário à jurisprudência dominante do STJ</li>
+          <li>Outras hipóteses legais</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Funcionam junto ao STJ <small>§1º</small></h4>
+        <ul>
+          <li><b>ENFAM</b>: regulamenta cursos oficiais de ingresso e promoção</li>
+          <li><b>CJF</b>: supervisão administrativa e orçamentária da Justiça Federal, decisões vinculantes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TRF ================= -->
+<section id="trf" class="court c-trf wrap">
+  <div class="court-head">
+    <h2>Tribunais Regionais Federais</h2><span class="art">arts. 106 a 108</span>
+    <p class="role">Segunda instância da Justiça Federal.</p>
+  </div>
+
+  <div class="compo">
+    <div><b>Tamanho</b>No mínimo 7 juízes</div>
+    <div><b>Idade</b>Mais de 30 e menos de 70 anos</div>
+    <div><b>Quinto</b>Advogados e MPF com mais de 10 anos</div>
+    <div><b>Demais</b>Juízes federais com mais de 5 anos, antiguidade e merecimento alternados</div>
+    <div><b>Funcionamento</b>Justiça itinerante obrigatória · Câmaras regionais facultativas</div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">I</span><h3>Competência originária</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>Penal <small>I, a</small></h4>
+        <ul>
+          <li>Juízes federais da área, incluídos os da Justiça Militar e do Trabalho, nos crimes comuns e de responsabilidade</li>
+          <li>Membros do MPU</li>
+          <li>Ressalvada a Justiça Eleitoral</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Remédios <small>I, c · d</small></h4>
+        <ul>
+          <li>MS e HD contra ato do próprio TRF ou de juiz federal</li>
+          <li>HC quando o coator for juiz federal</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Julgados e conflitos <small>I, b · e</small></h4>
+        <ul>
+          <li>Revisão criminal e rescisória de julgados seus ou dos juízes federais da região</li>
+          <li>Conflito de competência entre juízes federais vinculados ao próprio TRF</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">II</span><h3>Competência recursal</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>Apelação e demais recursos <small>II</small></h4>
+        <p>Causas decididas pelos juízes federais <b>e pelos juízes estaduais no exercício de competência federal delegada</b> na área de sua jurisdição.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= JUÍZES FEDERAIS ================= -->
+<section id="jf" class="court c-jf wrap">
+  <div class="court-head">
+    <h2>Juízes federais</h2><span class="art">arts. 109 e 110</span>
+    <p class="role">Primeira instância. Cada Estado e o DF formam uma seção judiciária com sede na capital.</p>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">Cível</span><h3>Em razão da pessoa</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>Entes federais <small>I</small></h4>
+        <p>União, autarquia ou empresa pública federal como autora, ré, assistente ou oponente.</p>
+        <div class="sub">Exceto</div>
+        <ul><li>Falência</li><li>Acidente de trabalho</li><li>Causas da Justiça Eleitoral e do Trabalho</li></ul>
+      </div>
+      <div class="box">
+        <h4>Causa internacional <small>II</small></h4>
+        <p>Estado estrangeiro ou organismo internacional <b>x</b> Município ou pessoa domiciliada ou residente no País. Recurso: <span class="hl">ordinário ao STJ</span>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">Cível</span><h3>Em razão da matéria</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>Tratados e cooperação <small>III · X</small></h4>
+        <ul>
+          <li>Causas fundadas em tratado ou contrato da União com Estado estrangeiro ou organismo internacional</li>
+          <li>Execução de carta rogatória após o exequatur</li>
+          <li>Execução de sentença estrangeira após a homologação</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Nacionalidade e indígenas <small>X · XI</small></h4>
+        <ul>
+          <li>Nacionalidade, inclusive a opção, e naturalização</li>
+          <li>Disputa sobre direitos indígenas</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Direitos humanos <small>V-A · §5º</small></h4>
+        <p>Causas deslocadas por <b>IDC</b>: suscitado pelo PGR perante o STJ, em qualquer fase do inquérito ou processo, em grave violação de direitos humanos.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">Penal</span><h3>Crimes</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>Interesse federal <small>IV</small></h4>
+        <ul>
+          <li>Crimes políticos</li>
+          <li>Infrações contra bens, serviços ou interesse da União, autarquias ou empresas públicas federais</li>
+        </ul>
+        <div class="sub">Exceto</div>
+        <ul><li><b>Contravenções</b></li><li>Justiça Militar e Eleitoral</li></ul>
+      </div>
+      <div class="box">
+        <h4>Crimes à distância e por matéria <small>V · VI</small></h4>
+        <ul>
+          <li>Crimes previstos em tratado, com execução no País e resultado no exterior, ou o inverso</li>
+          <li>Crimes contra a organização do trabalho</li>
+          <li>Nos casos da lei: sistema financeiro e ordem econômico-financeira</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Lugar e estrangeiro <small>IX · X</small></h4>
+        <ul>
+          <li>Crimes a bordo de navios ou aeronaves, ressalvada a Justiça Militar</li>
+          <li>Ingresso ou permanência irregular de estrangeiro</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">Remédios</span><h3>HC, MS e HD</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>Habeas corpus <small>VII</small></h4>
+        <p>Em matéria criminal de sua competência, ou quando o constrangimento vier de autoridade não sujeita diretamente a outra jurisdição.</p>
+      </div>
+      <div class="box">
+        <h4>MS e HD <small>VIII</small></h4>
+        <p>Contra ato de autoridade federal, salvo os casos de competência dos tribunais federais.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">Foro</span><h3>Onde propor e delegação</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>União autora <small>§1º</small></h4>
+        <p>Seção judiciária do domicílio da outra parte.</p>
+      </div>
+      <div class="box">
+        <h4>União ré <small>§2º</small></h4>
+        <p>À escolha do autor: seu domicílio, local do ato ou fato, situação da coisa ou DF.</p>
+      </div>
+      <div class="box">
+        <h4>Competência delegada <small>§§3º-4º</small></h4>
+        <p>Lei pode levar à Justiça Estadual as causas entre instituição de previdência e segurado, quando a comarca não for sede de vara federal. Recurso sempre ao <b>TRF</b>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CNJ ================= -->
+<section id="cnj" class="court c-cnj wrap">
+  <div class="court-head">
+    <h2>Conselho Nacional de Justiça</h2><span class="art">art. 103-B</span>
+    <p class="role">Órgão de controle administrativo, financeiro e disciplinar. Não tem função jurisdicional.</p>
+  </div>
+
+  <div class="compo">
+    <div><b>Membros</b>15, mandato de 2 anos, 1 recondução</div>
+    <div><b>Presidência</b>Presidente do STF; na ausência, o Vice do STF</div>
+    <div><b>Corregedor</b>Ministro do STJ, excluído da distribuição</div>
+    <div><b>Nomeação</b>Presidente da República, após maioria absoluta do Senado (exceto o Presidente do STF)</div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">Quem indica</span><h3>Composição</h3></div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Indica</th><th>Vagas</th></tr></thead>
+        <tbody>
+          <tr><td class="who">Membro nato</td><td>Presidente do STF</td></tr>
+          <tr><td class="who">STF</td><td>1 desembargador de TJ · 1 juiz estadual</td></tr>
+          <tr><td class="who">STJ</td><td>1 Ministro do STJ (o próprio tribunal) · 1 juiz de TRF · 1 juiz federal</td></tr>
+          <tr><td class="who">TST</td><td>1 Ministro do TST (o próprio tribunal) · 1 juiz de TRT · 1 juiz do trabalho</td></tr>
+          <tr><td class="who">PGR</td><td>1 membro do MPU · 1 membro do MP estadual (escolhido entre nomes indicados pelos MPs estaduais)</td></tr>
+          <tr><td class="who">Conselho Federal da OAB</td><td>2 advogados</td></tr>
+          <tr><td class="who">Câmara e Senado</td><td>1 cidadão cada, de notável saber jurídico e reputação ilibada</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>Sem indicação no prazo legal:</b> a escolha cabe ao STF (§3º). Oficiam junto ao CNJ o PGR e o Presidente do Conselho Federal da OAB (§6º).</div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-label"><span class="tag">§4º</span><h3>Atribuições</h3></div>
+    <div class="grid">
+      <div class="box">
+        <h4>Regulamentar e controlar legalidade <small>I · II</small></h4>
+        <ul>
+          <li>Zelar pela autonomia do Judiciário e pelo Estatuto da Magistratura; expedir atos regulamentares ou recomendar providências</li>
+          <li>Zelar pelo art. 37 e apreciar a legalidade de atos administrativos do Judiciário, podendo desconstituir, rever ou fixar prazo, sem prejuízo do TCU</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Disciplinar <small>III · IV · V</small></h4>
+        <ul>
+          <li>Receber reclamações contra membros, órgãos, serviços auxiliares e cartórios, sem prejuízo da competência dos tribunais</li>
+          <li>Avocar processos disciplinares, determinar remoção ou disponibilidade e aplicar sanções, com ampla defesa</li>
+          <li>Representar ao MP em crime contra a administração pública ou abuso de autoridade</li>
+          <li>Rever processos disciplinares julgados <b>há menos de um ano</b></li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Relatórios <small>VI · VII</small></h4>
+        <ul>
+          <li><b>Semestral:</b> estatístico de processos e sentenças por unidade da Federação</li>
+          <li><b>Anual:</b> situação do Judiciário e atividades do Conselho, integrando a mensagem do Presidente do STF ao Congresso</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Ministro-Corregedor <small>§5º</small></h4>
+        <ul>
+          <li>Receber reclamações e denúncias sobre magistrados e serviços judiciários</li>
+          <li>Funções executivas, inspeção e correição geral</li>
+          <li>Requisitar e designar magistrados e requisitar servidores, inclusive nos Estados</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note"><b>Ouvidorias (§7º):</b> a União cria ouvidorias de justiça que recebem reclamações e representam diretamente ao CNJ.</div>
+  </div>
+</section>
+
+<!-- ================= FLUXO ================= -->
+<section id="fluxo" class="court wrap" style="--c:var(--fg);--soft:var(--bg)">
+  <div class="court-head">
+    <h2>Fluxo recursal</h2><span class="art">visão de conjunto</span>
+    <p class="role">Por onde sobe uma causa da Justiça Federal e da Justiça Estadual.</p>
+  </div>
+  <div class="flow">
+    <svg viewBox="0 0 900 300" role="img" aria-label="Juiz federal e juiz estadual sobem ao TRF e ao TJ; destes, recurso especial ao STJ e extraordinário ao STF">
+      <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+      <!-- base -->
+      <rect x="20" y="210" width="170" height="60" rx="10" fill="var(--jf-soft)" stroke="var(--jf)"/>
+      <text class="t" x="105" y="238" text-anchor="middle" style="fill:var(--jf)">Juiz federal</text>
+      <text x="105" y="257" text-anchor="middle">art. 109</text>
+      <rect x="20" y="40" width="170" height="60" rx="10" fill="var(--surface)" stroke="var(--line)"/>
+      <text class="t" x="105" y="68" text-anchor="middle">Juiz estadual</text>
+      <text x="105" y="87" text-anchor="middle">inclusive delegada</text>
+      <!-- 2a instancia -->
+      <rect x="300" y="210" width="170" height="60" rx="10" fill="var(--trf-soft)" stroke="var(--trf)"/>
+      <text class="t" x="385" y="238" text-anchor="middle" style="fill:var(--trf)">TRF</text>
+      <text x="385" y="257" text-anchor="middle">apelação</text>
+      <rect x="300" y="40" width="170" height="60" rx="10" fill="var(--surface)" stroke="var(--line)"/>
+      <text class="t" x="385" y="68" text-anchor="middle">TJ</text>
+      <text x="385" y="87" text-anchor="middle">apelação</text>
+      <!-- cupula -->
+      <rect x="600" y="210" width="170" height="60" rx="10" fill="var(--stj-soft)" stroke="var(--stj)"/>
+      <text class="t" x="685" y="238" text-anchor="middle" style="fill:var(--stj)">STJ</text>
+      <text x="685" y="257" text-anchor="middle">REsp · RO</text>
+      <rect x="600" y="40" width="170" height="60" rx="10" fill="var(--stf-soft)" stroke="var(--stf)"/>
+      <text class="t" x="685" y="68" text-anchor="middle" style="fill:var(--stf)">STF</text>
+      <text x="685" y="87" text-anchor="middle">RE · RO</text>
+      <!-- arrows -->
+      <line x1="190" y1="240" x2="296" y2="240" stroke="var(--muted)" stroke-width="1.6" marker-end="url(#ar)"/>
+      <line x1="190" y1="70" x2="296" y2="70" stroke="var(--muted)" stroke-width="1.6" marker-end="url(#ar)"/>
+      <line x1="190" y1="90" x2="300" y2="215" stroke="var(--trf)" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+      <text x="200" y="168" style="fill:var(--trf);font-size:12px">competência delegada</text>
+      <line x1="470" y1="240" x2="596" y2="240" stroke="var(--muted)" stroke-width="1.6" marker-end="url(#ar)"/>
+      <line x1="470" y1="85" x2="596" y2="225" stroke="var(--muted)" stroke-width="1.6" marker-end="url(#ar)"/>
+      <line x1="470" y1="225" x2="596" y2="85" stroke="var(--muted)" stroke-width="1.6" marker-end="url(#ar)"/>
+      <line x1="470" y1="62" x2="596" y2="62" stroke="var(--muted)" stroke-width="1.6" marker-end="url(#ar)"/>
+      <line x1="685" y1="210" x2="685" y2="104" stroke="var(--stf)" stroke-width="1.6" marker-end="url(#ar)"/>
+      <text x="694" y="162" style="fill:var(--stf);font-size:12px">RE de acórdão do STJ</text>
+      <!-- crime politico -->
+      <path d="M105,210 C105,150 560,140 600,92" fill="none" stroke="var(--stf)" stroke-width="1.6" stroke-dasharray="2 4" marker-end="url(#ar)"/>
+      <text x="300" y="140" style="fill:var(--stf);font-size:12px">crime político: RO direto ao STF</text>
+      <text x="800" y="70" style="font-size:12px;fill:var(--muted)">questão</text>
+      <text x="800" y="86" style="font-size:12px;fill:var(--muted)">constitucional</text>
+      <text x="800" y="240" style="font-size:12px;fill:var(--muted)">lei federal</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ================= LADO A LADO ================= -->
+<section id="ladoalado" class="court wrap" style="--c:var(--fg);--soft:var(--bg)">
+  <div class="court-head">
+    <h2>Lado a lado</h2><span class="art">o que a banca troca</span>
+    <p class="role">Dispositivos parecidos, colocados juntos para você ver exatamente a palavra que muda.</p>
+  </div>
+
+  <div class="fix">
+    <b>Ajuste no exemplo:</b> o RE não cabe por "lei federal em face da CF" de forma genérica. Cabe quando a decisão <b>declara inconstitucional</b> lei federal, ou quando <b>valida lei local</b> contestada em face de lei federal. Se o que se valida é um <b>ato</b> local contra lei federal, aí é REsp.
+  </div>
+
+  <div class="cmp-list">
+
+    <!-- 1 -->
+    <article class="cmp">
+      <h3>1. Hipóteses do RE x REsp</h3>
+      <p class="q">Leia a última palavra: o parâmetro (CF ou lei federal) e o objeto (lei ou ato).</p>
+      <div class="tbl" style="margin-top:0">
+        <table>
+          <thead><tr><th>Situação da decisão recorrida</th><th>Recurso</th></tr></thead>
+          <tbody>
+            <tr><td>Contraria a <b>CF</b></td><td><span class="pill c-stf">RE</span></td></tr>
+            <tr><td>Contraria <b>tratado ou lei federal</b>, ou nega vigência</td><td><span class="pill c-stj">REsp</span></td></tr>
+            <tr><td><b>Declara inconstitucional</b> tratado ou lei federal</td><td><span class="pill c-stf">RE</span></td></tr>
+            <tr><td>Valida <b>lei ou ato</b> local contestado em face da <b>CF</b></td><td><span class="pill c-stf">RE</span></td></tr>
+            <tr><td>Valida <b>lei</b> local contestada em face de <b>lei federal</b></td><td><span class="pill c-stf">RE</span></td></tr>
+            <tr><td>Valida <b>ato</b> de governo local contestado em face de <b>lei federal</b></td><td><span class="pill c-stj">REsp</span></td></tr>
+            <tr><td>Dá à lei federal interpretação <b>divergente</b> de outro tribunal</td><td><span class="pill c-stj">REsp</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>Lei local x lei federal vira briga de quem pode legislar, e repartição de competência legislativa está na CF: por isso vai ao STF. Ato local x lei federal é só legalidade: STJ. Tratado aparece nos dois: declarar inconstitucional é STF; contrariar ou negar vigência é STJ.</span></div>
+    </article>
+
+    <!-- 2 -->
+    <article class="cmp">
+      <h3>2. De onde vem e qual filtro: RE x REsp</h3>
+      <p class="q">Origem da decisão recorrida e requisito de admissão.</p>
+      <div class="cols">
+        <div class="col c-stf"><div class="who">RE <small>art. 102, III e §3º</small></div>
+          <ul>
+            <li>Causa decidida em única ou última instância por <b>qualquer órgão</b></li>
+            <li>Inclui turma recursal e juiz de 1º grau em única instância</li>
+            <li>Filtro: <b>repercussão geral</b></li>
+            <li>Recusa por 2/3 <b>dos membros do Tribunal</b></li>
+          </ul></div>
+        <div class="col c-stj"><div class="who">REsp <small>art. 105, III e §§2º-3º</small></div>
+          <ul>
+            <li>Causa decidida em única ou última instância <b>por TRF ou TJ</b></li>
+            <li>Não cabe de turma recursal</li>
+            <li>Filtro: <b>relevância</b>, com hipóteses presumidas</li>
+            <li>Não conhecimento por 2/3 <b>do órgão competente</b> para o julgamento</li>
+          </ul></div>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>O texto do REsp nomeia os tribunais; o do RE não nomeia ninguém. Onde não há nome, cabe de qualquer órgão.</span></div>
+    </article>
+
+    <!-- 3 -->
+    <article class="cmp">
+      <h3>3. Recurso ordinário: STF x STJ</h3>
+      <p class="q">Quais remédios, de quem e em que instância.</p>
+      <div class="cols">
+        <div class="col c-stf"><div class="who">RO ao STF <small>art. 102, II</small></div>
+          <ul>
+            <li><b>HC, MS, HD e MI</b></li>
+            <li>Decididos em <b>única</b> instância</li>
+            <li>Pelos <b>Tribunais Superiores</b></li>
+            <li>Se <b>denegatória</b></li>
+            <li>Mais: <b>crime político</b></li>
+          </ul></div>
+        <div class="col c-stj"><div class="who">RO ao STJ <small>art. 105, II</small></div>
+          <ul>
+            <li><b>HC</b> em única <b>ou última</b> instância por TRF ou TJ, denegatório</li>
+            <li><b>MS</b> só em <b>única</b> instância por TRF ou TJ, denegatório</li>
+            <li>Sem HD e sem MI</li>
+            <li>Mais: Estado estrangeiro ou organismo internacional x Município ou pessoa no País</li>
+          </ul></div>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>O STF recebe os quatro remédios; o STJ só HC e MS. A palavra "última" só aparece no HC do STJ. Nos remédios, só se a decisão for denegatória: concessão não abre RO.</span></div>
+    </article>
+
+    <!-- 4 -->
+    <article class="cmp">
+      <h3>4. Habeas corpus originário: STF x STJ x TRF</h3>
+      <p class="q">Depende de quem é o <b>coator</b> e de quem é o <b>paciente</b>.</p>
+      <div class="cols">
+        <div class="col c-stf"><div class="who">STF <small>102, I, d · i</small></div>
+          <ul>
+            <li><b>Paciente:</b> PR, Vice, congressistas, Ministros do STF, PGR, Ministros de Estado, Comandantes, membros de Tribunais Superiores e do TCU, chefes de missão diplomática</li>
+            <li><b>Coator:</b> Tribunal Superior</li>
+          </ul></div>
+        <div class="col c-stj"><div class="who">STJ <small>105, I, c</small></div>
+          <ul>
+            <li><b>Coator ou paciente:</b> autoridades do art. 105, I, a (Governador, desembargador etc.)</li>
+            <li><b>Coator:</b> tribunal sujeito à sua jurisdição (TJ, TRF), <b>Ministro de Estado</b> ou Comandante</li>
+            <li>Ressalvada a Justiça Eleitoral</li>
+          </ul></div>
+        <div class="col c-trf"><div class="who">TRF <small>108, I, d</small></div>
+          <ul><li><b>Coator:</b> juiz federal</li></ul></div>
+        <div class="col c-jf"><div class="who">Juiz federal <small>109, VII</small></div>
+          <ul><li>Matéria criminal de sua competência, ou autoridade não sujeita a outra jurisdição</li></ul></div>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>Ministro de Estado <b>sofrendo</b> a coação (paciente) sobe ao STF; Ministro de Estado <b>praticando</b> a coação (coator) vai ao STJ. O HC "sobe" um degrau acima de quem coage.</span></div>
+    </article>
+
+    <!-- 5 -->
+    <article class="cmp">
+      <h3>5. Mandado de segurança e habeas data originários</h3>
+      <p class="q">Contra ato de quem?</p>
+      <div class="cols">
+        <div class="col c-stf"><div class="who">STF <small>102, I, d</small></div>
+          <ul><li>Presidente da República</li><li>Mesas da Câmara e do Senado</li><li><b>TCU</b></li><li>PGR</li><li>Próprio STF</li></ul></div>
+        <div class="col c-stj"><div class="who">STJ <small>105, I, b</small></div>
+          <ul><li><b>Ministro de Estado</b></li><li>Comandantes das Forças Armadas</li><li>Próprio STJ</li></ul></div>
+        <div class="col c-trf"><div class="who">TRF <small>108, I, c</small></div>
+          <ul><li>Próprio TRF</li><li>Juiz federal</li></ul></div>
+        <div class="col c-jf"><div class="who">Juiz federal <small>109, VIII</small></div>
+          <ul><li>Demais autoridades federais</li></ul></div>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>No MS não existe a divisão coator/paciente: Ministro de Estado é sempre STJ. No HC como paciente é STF. Cada tribunal julga MS contra seus próprios atos.</span></div>
+    </article>
+
+    <!-- 6 -->
+    <article class="cmp">
+      <h3>6. Mandado de injunção: STF x STJ</h3>
+      <p class="q">De quem é o dever de editar a norma faltante?</p>
+      <div class="cols">
+        <div class="col c-stf"><div class="who">STF <small>102, I, q</small></div>
+          <p>Presidente da República, Congresso, Câmara, Senado, Mesas dessas Casas, TCU, Tribunais Superiores ou o próprio STF.</p></div>
+        <div class="col c-stj"><div class="who">STJ <small>105, I, h</small></div>
+          <p>Qualquer outro órgão, entidade ou autoridade <b>federal</b>, da administração direta ou indireta, salvo STF e Justiças Militar, Eleitoral, do Trabalho e Federal.</p></div>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>STF fica com a cúpula federal; o STJ é residual dentro da esfera federal. Ministério ou autarquia federal omissa: STJ.</span></div>
+    </article>
+
+    <!-- 7 -->
+    <article class="cmp">
+      <h3>7. Foro penal: só crime comum x crime comum e de responsabilidade</h3>
+      <p class="q">O mesmo tribunal pode julgar autoridades com abrangências diferentes.</p>
+      <div class="cols">
+        <div class="col c-stf"><div class="who">STF</div>
+          <ul>
+            <li><b>Só comuns:</b> PR, Vice, congressistas, Ministros do STF, PGR</li>
+            <li><b>Comuns e de responsabilidade:</b> Ministros de Estado, Comandantes, membros dos Tribunais Superiores e do TCU, chefes de missão diplomática permanente</li>
+          </ul></div>
+        <div class="col c-stj"><div class="who">STJ</div>
+          <ul>
+            <li><b>Só comuns:</b> Governadores</li>
+            <li><b>Comuns e de responsabilidade:</b> desembargadores, membros de TCE/TCDF, TRF, TRE, TRT, Tribunais de Contas dos Municípios e MPU que oficia perante tribunais</li>
+          </ul></div>
+        <div class="col c-trf"><div class="who">TRF</div>
+          <ul><li><b>Comuns e de responsabilidade:</b> juízes federais da área (inclusive da Justiça Militar e do Trabalho) e membros do MPU, ressalvada a Eleitoral</li></ul></div>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>Chefes de Poder e de MP (PR, congressistas, Ministros do STF, PGR, Governadores) aparecem só nos crimes comuns porque o crime de responsabilidade deles tem outro julgador: Senado (PR, Vice, Ministros do STF, PGR) ou tribunal especial (Governador); congressistas respondem por quebra de decoro na própria Casa. MPU que oficia perante tribunais vai ao STJ; os demais membros do MPU, ao TRF.</span></div>
+    </article>
+
+    <!-- 8 -->
+    <article class="cmp">
+      <h3>8. Conflitos: de competência x de atribuições</h3>
+      <p class="q">Quem são as partes do conflito?</p>
+      <div class="cols">
+        <div class="col c-stf"><div class="who">STF <small>102, I, o · f</small></div>
+          <ul>
+            <li>STJ x qualquer tribunal</li>
+            <li>Tribunal Superior x Tribunal Superior</li>
+            <li>Tribunal Superior x qualquer outro tribunal</li>
+            <li>Conflito federativo: União x Estados ou DF</li>
+          </ul></div>
+        <div class="col c-stj"><div class="who">STJ <small>105, I, d · g · j</small></div>
+          <ul>
+            <li>Quaisquer tribunais (ex.: TJ x TRF)</li>
+            <li>Tribunal x juiz a ele não vinculado</li>
+            <li>Juízes de tribunais diversos (ex.: juiz estadual x juiz federal)</li>
+            <li><b>Conflito de atribuições</b> entre autoridades administrativas e judiciárias</li>
+            <li>Entes federativos sobre IBS/CBS</li>
+          </ul></div>
+        <div class="col c-trf"><div class="who">TRF <small>108, I, e</small></div>
+          <ul><li>Juízes federais vinculados ao próprio TRF</li></ul></div>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>Havendo Tribunal Superior em um dos lados, é STF. Conflito de <b>atribuições</b> só existe no art. 105: sempre STJ. Conflito federativo em geral é STF; o específico de IBS/CBS foi para o STJ (EC 132).</span></div>
+    </article>
+
+    <!-- 9 -->
+    <article class="cmp">
+      <h3>9. Estado estrangeiro e organismo internacional</h3>
+      <p class="q">Quem está do outro lado da causa?</p>
+      <div class="cols">
+        <div class="col c-stf"><div class="who">STF originário <small>102, I, e</small></div>
+          <p>Contra <b>União, Estado, DF ou Território</b>.</p></div>
+        <div class="col c-jf"><div class="who">Juiz federal <small>109, II</small></div>
+          <p>Contra <b>Município</b> ou <b>pessoa</b> domiciliada ou residente no País. Recurso: <b>RO ao STJ</b>, pulando o TRF.</p></div>
+        <div class="col c-jf"><div class="who">Juiz federal <small>109, III</small></div>
+          <p>Causa fundada em <b>tratado ou contrato da União</b> com Estado estrangeiro ou organismo internacional.</p></div>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>Município é o único ente federativo que fica fora do STF: vai ao juiz federal, com recurso ordinário ao STJ.</span></div>
+    </article>
+
+    <!-- 10 -->
+    <article class="cmp">
+      <h3>10. Cooperação internacional</h3>
+      <p class="q">Quem autoriza e quem cumpre.</p>
+      <div class="cols">
+        <div class="col c-stj"><div class="who">STJ <small>105, I, i</small></div>
+          <ul><li>Homologa sentença estrangeira</li><li>Concede exequatur à carta rogatória</li></ul></div>
+        <div class="col c-jf"><div class="who">Juiz federal <small>109, X</small></div>
+          <ul><li>Executa a sentença após a homologação</li><li>Cumpre a carta rogatória após o exequatur</li></ul></div>
+        <div class="col c-stf"><div class="who">STF <small>102, I, g</small></div>
+          <ul><li>Julga a <b>extradição</b> solicitada por Estado estrangeiro</li></ul></div>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>STJ dá o "ok" e o juiz federal executa. Extradição é a exceção que ficou no STF.</span></div>
+    </article>
+
+    <!-- 11 -->
+    <article class="cmp">
+      <h3>11. ADI x ADC e efeito vinculante x súmula vinculante</h3>
+      <p class="q">Objeto, quórum e alcance.</p>
+      <div class="cols">
+        <div class="col c-stf"><div class="who">ADI <small>102, I, a</small></div>
+          <ul><li>Lei ou ato normativo <b>federal ou estadual</b></li><li>AGU defende a norma; PGR opina</li></ul></div>
+        <div class="col c-stf"><div class="who">ADC <small>102, I, a</small></div>
+          <ul><li>Lei ou ato normativo <b>só federal</b></li><li>Mesmos legitimados da ADI</li></ul></div>
+        <div class="col c-stf"><div class="who">Súmula vinculante <small>103-A</small></div>
+          <ul><li>Aprovação por <b>2/3</b> dos membros</li><li>Efeito a partir da <b>publicação</b> na imprensa oficial</li><li>Descumprimento: reclamação</li></ul></div>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>Decisão de mérito em ADI/ADC e súmula vinculante alcançam o mesmo público: demais órgãos do Judiciário e Administração direta e indireta das três esferas. O texto não inclui o Legislativo na função de legislar.</span></div>
+    </article>
+
+    <!-- 12 -->
+    <article class="cmp">
+      <h3>12. Os "2/3" que se confundem</h3>
+      <p class="q">Mesma fração, colegiados diferentes.</p>
+      <div class="cols">
+        <div class="col c-stf"><div class="who">Repercussão geral</div><p>Recusa por 2/3 <b>dos membros do STF</b>.</p></div>
+        <div class="col c-stj"><div class="who">Relevância do REsp</div><p>Não conhecimento por 2/3 <b>do órgão competente</b> para o julgamento.</p></div>
+        <div class="col c-stf"><div class="who">Súmula vinculante</div><p>Aprovação, revisão ou cancelamento por 2/3 <b>dos membros do STF</b>.</p></div>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>A relevância é a única que pode ser decidida por uma turma ou seção; as outras duas exigem o tribunal inteiro.</span></div>
+    </article>
+
+    <!-- 13 -->
+    <article class="cmp">
+      <h3>13. Composição: STF x STJ x TRF</h3>
+      <p class="q">Números, idade e participação do Senado.</p>
+      <div class="cols">
+        <div class="col c-stf"><div class="who">STF <small>art. 101</small></div>
+          <ul><li><b>11</b> Ministros (fixo)</li><li>35 a 70 anos</li><li>Cidadão, sem exigir carreira</li><li>Senado: maioria absoluta</li></ul></div>
+        <div class="col c-stj"><div class="who">STJ <small>art. 104</small></div>
+          <ul><li><b>No mínimo 33</b></li><li>35 a 70 anos</li><li>Terços: TRF, TJ, advogados e MP</li><li>Senado: maioria absoluta</li></ul></div>
+        <div class="col c-trf"><div class="who">TRF <small>art. 107</small></div>
+          <ul><li><b>No mínimo 7</b></li><li><b>30</b> a 70 anos</li><li>Quinto: advogados e MPF com 10 anos</li><li><b>Sem</b> aprovação do Senado</li></ul></div>
+        <div class="col c-cnj"><div class="who">CNJ <small>art. 103-B</small></div>
+          <ul><li><b>15</b> membros, 2 anos, 1 recondução</li><li>Sem limite de idade no texto atual</li><li>Senado: maioria absoluta (exceto Presidente do STF)</li></ul></div>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>Quanto mais alto, mais velho e mais Senado: TRF começa aos 30 e dispensa o Senado; STF e STJ começam aos 35 e passam pelo Senado.</span></div>
+    </article>
+
+    <!-- 14 -->
+    <article class="cmp">
+      <h3>14. Revisão criminal e rescisória</h3>
+      <p class="q">De quais julgados?</p>
+      <div class="cols">
+        <div class="col c-stf"><div class="who">STF e STJ</div><p>Só dos <b>seus próprios</b> julgados.</p></div>
+        <div class="col c-trf"><div class="who">TRF</div><p>Dos seus julgados <b>e dos juízes federais da região</b>.</p></div>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>O TRF é o único que revisa também o 1º grau abaixo dele.</span></div>
+    </article>
+
+    <!-- 15 -->
+    <article class="cmp">
+      <h3>15. Justiça Federal: o que fica de fora</h3>
+      <p class="q">Exceções que derrubam a competência federal.</p>
+      <div class="cols">
+        <div class="col c-jf"><div class="who">Cível <small>109, I</small></div>
+          <ul><li>Falência</li><li>Acidente de trabalho</li><li>Eleitoral e Trabalho</li><li>Sociedade de economia mista não está no rol</li></ul></div>
+        <div class="col c-jf"><div class="who">Penal <small>109, IV · IX</small></div>
+          <ul><li><b>Contravenções</b>, mesmo contra a União</li><li>Justiça Militar e Eleitoral</li><li>Crime a bordo de navio ou aeronave: ressalva só da Militar</li></ul></div>
+        <div class="col c-trf"><div class="who">Delegada <small>109, §§3º-4º</small></div>
+          <ul><li>Previdência x segurado, comarca sem vara federal</li><li>Julga o juiz estadual</li><li>Recurso vai ao <b>TRF</b>, não ao TJ</li></ul></div>
+      </div>
+      <div class="key"><b class="k">Macete</b><span>A lista do art. 109, I fala em União, autarquia e <b>empresa pública</b>. Economia mista e contravenção são as ausências mais cobradas.</span></div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ================= PEGADINHAS ================= -->
+<section id="pegadinhas" class="court c-warn wrap">
+  <div class="court-head">
+    <h2>Pegadinhas de prova</h2><span class="art">quem julga?</span>
+    <p class="role">Os pares que a banca mais troca.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Situação</th><th>Quem julga</th></tr></thead>
+      <tbody>
+        <tr><td>Ministro de Estado como <b>paciente</b> de HC</td><td><span class="pill c-stf">STF</span></td></tr>
+        <tr><td>Ministro de Estado como <b>coator</b> em HC</td><td><span class="pill c-stj">STJ</span></td></tr>
+        <tr><td>MS contra ato de Ministro de Estado</td><td><span class="pill c-stj">STJ</span></td></tr>
+        <tr><td>MS contra ato do Presidente da República</td><td><span class="pill c-stf">STF</span></td></tr>
+        <tr><td>Governador, crime comum</td><td><span class="pill c-stj">STJ</span></td></tr>
+        <tr><td>Governador, crime de responsabilidade</td><td>Tribunal especial (nem STF, nem STJ)</td></tr>
+        <tr><td>Desembargador de TJ, crime comum ou de responsabilidade</td><td><span class="pill c-stj">STJ</span></td></tr>
+        <tr><td>Ministro de Tribunal Superior</td><td><span class="pill c-stf">STF</span></td></tr>
+        <tr><td>Juiz federal ou membro do MPU (exceto eleitoral)</td><td><span class="pill c-trf">TRF</span></td></tr>
+        <tr><td>Decisão que valida <b>lei</b> local contra lei federal</td><td><span class="pill c-stf">STF · RE</span></td></tr>
+        <tr><td>Decisão que valida <b>ato</b> de governo local contra lei federal</td><td><span class="pill c-stj">STJ · REsp</span></td></tr>
+        <tr><td>Acórdão de turma recursal</td><td>Cabe <span class="pill c-stf">RE</span>, não cabe REsp</td></tr>
+        <tr><td>Conflito STJ x TJ</td><td><span class="pill c-stf">STF</span></td></tr>
+        <tr><td>Conflito TJ x TRF, ou juiz estadual x juiz federal</td><td><span class="pill c-stj">STJ</span></td></tr>
+        <tr><td>Conflito entre juízes federais do mesmo TRF</td><td><span class="pill c-trf">TRF</span></td></tr>
+        <tr><td>Homologação de sentença estrangeira</td><td><span class="pill c-stj">STJ</span></td></tr>
+        <tr><td>Execução da sentença estrangeira homologada</td><td><span class="pill c-jf">Juiz federal</span></td></tr>
+        <tr><td>Extradição</td><td><span class="pill c-stf">STF</span></td></tr>
+        <tr><td>Estado estrangeiro x União ou Estado-membro</td><td><span class="pill c-stf">STF</span> originário</td></tr>
+        <tr><td>Estado estrangeiro x Município ou particular</td><td><span class="pill c-jf">Juiz federal</span> → RO ao <span class="pill c-stj">STJ</span></td></tr>
+        <tr><td>Crime político</td><td><span class="pill c-jf">Juiz federal</span> → RO ao <span class="pill c-stf">STF</span></td></tr>
+        <tr><td>Contravenção contra interesse da União</td><td>Justiça Estadual</td></tr>
+        <tr><td>HC denegado em única instância por Tribunal Superior</td><td><span class="pill c-stf">RO ao STF</span></td></tr>
+        <tr><td>HC denegado em única <b>ou última</b> instância por TJ/TRF</td><td><span class="pill c-stj">RO ao STJ</span></td></tr>
+        <tr><td>MS denegado por TJ/TRF</td><td><span class="pill c-stj">RO ao STJ</span> só se em <b>única</b> instância</td></tr>
+        <tr><td>Ações contra o CNJ e o CNMP</td><td><span class="pill c-stf">STF</span></td></tr>
+        <tr><td>Quem defende a norma impugnada na ADI</td><td>AGU (o PGR apenas opina)</td></tr>
+        <tr><td>Prazo após ADO contra órgão administrativo</td><td>30 dias (para o Poder, só ciência)</td></tr>
+        <tr><td>Quórum para aprovar súmula vinculante</td><td>2/3 dos membros do STF</td></tr>
+        <tr><td>Decisão que contraria súmula vinculante</td><td><span class="pill c-stf">Reclamação ao STF</span></td></tr>
+        <tr><td>Número de Ministros: STF x STJ</td><td>STF: 11 fixos · STJ: no mínimo 33</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</main>
+
+<footer class="wrap">Texto-base: CF/88, arts. 101 a 110, com as redações das ECs 45/2004, 61/2009, 103/2019, 122/2022, 125/2022 e 132/2023.</footer>
+
+
+<a href="index.html" class="estante-voltar" aria-label="Voltar para a Estante">← Estante</a>
+<style>.estante-voltar{position:fixed;left:max(12px,env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9999;
+font:600 13px/1 system-ui,-apple-system,sans-serif;text-decoration:none;color:#fff;background:#1b2a4a;padding:9px 13px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.estante-voltar:focus-visible{outline:2px solid #8fa8ff;outline-offset:2px}</style>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){});}</script>
+</body></html>

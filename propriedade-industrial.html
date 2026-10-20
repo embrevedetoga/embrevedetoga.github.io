@@ -1,0 +1,1039 @@
+<!doctype html><html lang="pt-BR"><head><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1b2a4a"><link rel="apple-touch-icon" href="./icon-192.png"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Mapa da Propriedade Industrial</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: faixa de cabeçalho + navegação fixa por seções; cada instituto tem cor própria (patente, desenho, marca, IG/desleal, crime) */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --ink:#151d2b; --muted:#566074; --line:#d9dee7; --accent:#2343a3;
+  --pat:#0b6876; --des:#6a3a9f; --mar:#9a5200; --ig:#2a7339; --crime:#b0261d; --stj:#2343a3;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f131a; --surface:#161c26; --ink:#e5e9f0; --muted:#9aa4b5; --line:#29313e; --accent:#8fa8ff;
+  --pat:#5cc4d1; --des:#bb9bf2; --mar:#f0a64c; --ig:#80d08f; --crime:#ff8f85; --stj:#8fa8ff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f131a; --surface:#161c26; --ink:#e5e9f0; --muted:#9aa4b5; --line:#29313e; --accent:#8fa8ff;
+  --pat:#5cc4d1; --des:#bb9bf2; --mar:#f0a64c; --ig:#80d08f; --crime:#ff8f85; --stj:#8fa8ff; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1060px;margin:0 auto}
+h1,h2,h3,h4{font-family:var(--display);text-wrap:balance;line-height:1.15;margin:0}
+h2{font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.2rem;font-weight:700;margin-top:6px}
+h4{font-size:1rem;font-weight:700}
+p{margin:0}
+a{color:var(--accent)}
+.mono,.art{font-family:var(--mono)}
+.muted{color:var(--muted)}
+
+/* Cabeçalho */
+header.top{padding-block:40px 22px;display:grid;gap:14px}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+header.top h1{font-size:clamp(2.2rem,6vw,3.7rem);font-weight:800;letter-spacing:-.02em}
+header.top h1 span{color:var(--accent)}
+.lead{max-width:68ch;color:var(--muted);font-size:1.05rem}
+.legend{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;
+  border:1px solid currentColor;white-space:nowrap;display:inline-block;line-height:1.4}
+.t-pat{color:var(--pat)} .t-des{color:var(--des)} .t-mar{color:var(--mar)} .t-ig{color:var(--ig)} .t-crime{color:var(--crime)} .t-stj{color:var(--stj)} .t-geral{color:var(--muted)}
+
+/* Navegação */
+nav.sec{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);
+  margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
+nav.sec .inner{max-width:1060px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding-block:8px;scrollbar-width:thin}
+nav.sec a{font-family:var(--display);font-weight:600;font-size:.86rem;text-decoration:none;color:var(--muted);padding:6px 11px;border-radius:7px;white-space:nowrap}
+nav.sec a:hover,nav.sec a:focus-visible{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);outline:none}
+
+section{padding-block:44px 8px;scroll-margin-top:60px;display:grid;gap:18px}
+section>.head{display:grid;gap:6px;border-top:3px solid var(--ink);padding-top:14px}
+section>.head .sub{color:var(--muted);max-width:70ch}
+.c-pat>.head{border-color:var(--pat)} .c-des>.head{border-color:var(--des)} .c-mar>.head{border-color:var(--mar)}
+.c-ig>.head{border-color:var(--ig)} .c-crime>.head{border-color:var(--crime)}
+
+.block{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;display:grid;gap:12px;min-width:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px}
+ul,ol{margin:0;padding-left:1.25em;display:grid;gap:5px}
+li{padding-left:2px}
+b,strong{font-weight:600}
+
+/* Lei */
+.lei{border-left:3px solid var(--line);padding:2px 0 2px 14px;display:grid;gap:4px}
+.lei .art{font-size:.78rem;color:var(--muted);font-weight:500}
+.lei.pat{border-color:var(--pat)} .lei.des{border-color:var(--des)} .lei.mar{border-color:var(--mar)} .lei.ig{border-color:var(--ig)}
+
+/* Caixas */
+.box{border-radius:8px;padding:12px 14px;display:grid;gap:6px;font-size:.96rem}
+.box .lbl{font-family:var(--mono);font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;font-weight:500}
+.trap{background:color-mix(in srgb,var(--crime) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--crime) 35%,transparent)}
+.trap .lbl{color:var(--crime)}
+.stjbox{background:color-mix(in srgb,var(--stj) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--stj) 30%,transparent)}
+.stjbox .lbl{color:var(--stj)}
+.tip{background:color-mix(in srgb,var(--ig) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--ig) 30%,transparent)}
+.tip .lbl{color:var(--ig)}
+
+/* Tabelas */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.93rem}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--display);font-weight:700;font-size:.8rem;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);background:color-mix(in srgb,var(--ink) 4%,var(--surface))}
+tr:last-child td{border-bottom:0}
+td .art{font-size:.8rem;color:var(--muted)}
+.hl{font-family:var(--mono);font-weight:500;font-variant-numeric:tabular-nums}
+.col-pat{color:var(--pat)} .col-des{color:var(--des)} .col-mar{color:var(--mar)}
+
+/* Hero comparativo */
+.trio{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
+.inst{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--c);border-radius:10px;padding:16px;display:grid;gap:8px;align-content:start}
+.inst h3{color:var(--c);margin:0}
+.inst .big{font-family:var(--mono);font-size:1.5rem;font-weight:500;line-height:1.1;font-variant-numeric:tabular-nums}
+.inst .small{font-size:.88rem;color:var(--muted)}
+.inst dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:.88rem}
+.inst dt{font-family:var(--mono);font-size:.74rem;color:var(--muted);text-transform:uppercase;padding-top:2px}
+.inst dd{margin:0}
+
+/* Controles */
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{font-family:var(--display);font-weight:600;font-size:.84rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  padding:6px 12px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip:focus-visible,.opt:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=search]{font:inherit;font-size:.95rem;padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);min-width:0;flex:1 1 220px}
+.toggle{display:flex;align-items:center;gap:8px;font-family:var(--display);font-size:.86rem;font-weight:600;cursor:pointer}
+.count{font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+
+/* Prazos */
+td.pz{font-family:var(--mono);font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
+.hide-pz td.pz{cursor:pointer}
+.hide-pz td.pz:not(.shown) span{filter:blur(6px);user-select:none}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c);margin-right:6px;vertical-align:middle}
+
+/* Jurisprudência */
+.jlist{display:grid;gap:10px}
+.j{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:6px;min-width:0}
+.j .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.j .info{font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+.j h4{font-size:.98rem;line-height:1.3}
+.j p{font-size:.94rem}
+.j .caso{color:var(--muted);font-size:.9rem}
+
+/* Questões */
+.score{font-family:var(--mono);font-size:.86rem;padding:6px 12px;border-radius:8px;background:var(--surface);border:1px solid var(--line)}
+.qlist{display:grid;gap:14px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:grid;gap:10px;min-width:0}
+.q .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+.q .num{font-family:var(--display);font-weight:800;color:var(--ink);font-size:.95rem}
+.q .enun{font-size:.97rem}
+.opts{display:grid;gap:6px}
+.opt{display:grid;grid-template-columns:28px 1fr;gap:8px;text-align:left;font:inherit;font-size:.93rem;line-height:1.5;color:var(--ink);background:transparent;
+  border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer}
+.opt:hover{border-color:var(--muted)}
+.opt .L{font-family:var(--mono);font-weight:500;color:var(--muted)}
+.opt.ok{border-color:var(--ig);background:color-mix(in srgb,var(--ig) 12%,var(--surface))}
+.opt.ok .L{color:var(--ig)}
+.opt.bad{border-color:var(--crime);background:color-mix(in srgb,var(--crime) 10%,var(--surface))}
+.opt.bad .L{color:var(--crime)}
+.q.answered .opt{cursor:default}
+.coment{border-top:1px dashed var(--line);padding-top:10px;font-size:.93rem;display:grid;gap:6px}
+.coment .res{font-family:var(--display);font-weight:700}
+.reset{font-family:var(--display);font-weight:600;font-size:.84rem;background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 12px;cursor:pointer}
+
+.pg{counter-reset:pg;display:grid;gap:10px}
+.pg li{list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px 12px 54px;position:relative;counter-increment:pg;font-size:.95rem}
+.pg li::before{content:counter(pg,decimal-leading-zero);position:absolute;left:14px;top:12px;font-family:var(--mono);font-weight:500;color:var(--crime)}
+.pg{padding:0}
+footer{padding-block:40px 60px;color:var(--muted);font-size:.86rem}
+@media (max-width:560px){body{font-size:16px}.block{padding:14px}.q{padding:14px}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">Direito Empresarial · Lei 9.279/1996 · Banca FGV</div>
+  <h1>Propriedade <span>Industrial</span></h1>
+  <p class="lead">Lei seca, teoria, jurisprudência do STJ/STF e 36 questões FGV comentadas, organizados por instituto. Cada cor marca um instituto; os prazos estão reunidos em uma tabela própria com modo de treino.</p>
+  <div class="legend">
+    <span class="tag t-pat">Patente</span><span class="tag t-des">Desenho industrial</span><span class="tag t-mar">Marca</span>
+    <span class="tag t-ig">IG e concorrência desleal</span><span class="tag t-crime">Crimes</span><span class="tag t-stj">Jurisprudência</span>
+  </div>
+</header>
+</div>
+
+<nav class="sec" aria-label="Seções"><div class="inner">
+  <a href="#visao">Visão geral</a><a href="#patentes">Patentes</a><a href="#desenho">Desenho</a><a href="#marcas">Marcas</a>
+  <a href="#ig">IG e desleal</a><a href="#processo">Processo e competência</a><a href="#crimes">Crimes</a>
+  <a href="#autoral">Direito autoral</a><a href="#tratados">Tratados</a><a href="#prazos">Prazos</a>
+  <a href="#juris">Jurisprudência</a><a href="#questoes">Questões FGV</a><a href="#pegadinhas">Pegadinhas</a>
+</div></nav>
+
+<main class="wrap">
+
+<!-- VISÃO GERAL -->
+<section id="visao">
+  <div class="head"><div class="eyebrow">01 · Base</div><h2>Visão geral</h2>
+  <p class="sub">Propriedade intelectual é o gênero. Direito autoral (Lei 9.610/98) e propriedade industrial (Lei 9.279/96) são espécies. A LPI protege por <b>patente</b> (invenção e modelo de utilidade) e por <b>registro</b> (desenho industrial e marca), e reprime falsas indicações geográficas e concorrência desleal.</p></div>
+
+  <div class="trio">
+    <div class="inst" style="--c:var(--pat)"><h3>Invenção</h3><div class="big">20 anos</div><div class="small">do depósito · carta-patente</div>
+      <dl><dt>Requisitos</dt><dd>novidade, atividade inventiva, aplicação industrial</dd><dt>Graça</dt><dd>12 meses</dd><dt>Prorroga?</dt><dd>Não</dd></dl></div>
+    <div class="inst" style="--c:var(--pat)"><h3>Modelo de utilidade</h3><div class="big">15 anos</div><div class="small">do depósito · carta-patente</div>
+      <dl><dt>Requisitos</dt><dd>novidade, ato inventivo, aplicação industrial, melhoria funcional</dd><dt>Graça</dt><dd>12 meses</dd><dt>Prorroga?</dt><dd>Não</dd></dl></div>
+    <div class="inst" style="--c:var(--des)"><h3>Desenho industrial</h3><div class="big">10 + 3×5</div><div class="small">do depósito · máximo 25 anos · registro</div>
+      <dl><dt>Requisitos</dt><dd>novidade, originalidade, aplicação industrial</dd><dt>Graça</dt><dd>180 dias</dd><dt>Prorroga?</dt><dd>3 vezes de 5 anos</dd></dl></div>
+    <div class="inst" style="--c:var(--mar)"><h3>Marca</h3><div class="big">10 + 10 + …</div><div class="small">da <b>concessão</b> · registro</div>
+      <dl><dt>Requisitos</dt><dd>distintividade, novidade relativa, desimpedimento</dd><dt>Graça</dt><dd>não há</dd><dt>Prorroga?</dt><dd>indefinidamente</dd></dl></div>
+  </div>
+
+  <div class="box tip"><div class="lbl">Memorize a contagem</div>
+    <p><b>Depósito</b>: patente de invenção, modelo de utilidade e desenho industrial. <b>Concessão</b>: marca. Mnemônico do seu material: in<b>V</b>enção = 20 (V de vinte), uti<b>1</b>idad<b>5</b> = 15, "MARTA 10" = marca 10 anos.</p></div>
+
+  <div class="grid2">
+    <div class="block">
+      <h3>Base constitucional e natureza</h3>
+      <div class="lei"><span class="art">CF, art. 5º, XXIX</span><p>Privilégio <b>temporário</b> aos autores de inventos industriais e proteção às criações industriais, às marcas, aos nomes de empresas e a outros signos distintivos, tendo em vista o interesse social e o desenvolvimento tecnológico e econômico do País.</p></div>
+      <div class="lei"><span class="art">LPI, art. 5º</span><p>Consideram-se <b>bens móveis</b>, para os efeitos legais, os direitos de propriedade industrial. Não há exceção para indicação geográfica (pegadinha AGE-MG 2022).</p></div>
+      <p class="muted" style="font-size:.92rem">Direitos autorais também são bens móveis (LDA, art. 3º).</p>
+    </div>
+    <div class="block">
+      <h3>Art. 2º · formas de proteção</h3>
+      <ol>
+        <li>Concessão de <b>patentes</b> de invenção e de modelo de utilidade</li>
+        <li>Concessão de <b>registro</b> de desenho industrial</li>
+        <li>Concessão de <b>registro</b> de marca</li>
+        <li><b>Repressão</b> às falsas indicações geográficas</li>
+        <li><b>Repressão</b> à concorrência desleal</li>
+      </ol>
+      <div class="box trap"><div class="lbl">Pegadinha</div><p>"Prevenção e repressão às infrações contra a ordem econômica" <b>não</b> está no art. 2º (é matéria da Lei do CADE). Seu material cita um inciso VI sobre jogos eletrônicos (Lei 14.852/2024): confira na redação vigente antes de usar na prova.</p></div>
+      <p class="muted" style="font-size:.9rem">Aplicação a estrangeiros: tratado em vigor no Brasil ou reciprocidade (art. 3º).</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>INPI e o sistema atributivo</h3>
+    <p>O INPI é autarquia federal que concede patentes e registros. A regra é o <b>sistema atributivo</b>: o direito nasce do registro/patente (art. 129 para marca; Info 820 para desenho). O direito autoral, ao contrário, nasce da criação e o registro é facultativo (LDA, art. 18).</p>
+    <div class="box stjbox"><div class="lbl">Jurisprudência em Tese 24 · teses 19 e 20</div><p>A tese 19 fala em sistema <b>atributivo</b> com <b>contrapesos</b> (precedência, repressão à concorrência desleal). A tese 20 diz que "vige o sistema declarativo". Na prova FGV, use o atributivo como regra e o direito de precedência (art. 129, §1º) como o contrapeso de origem declarativa.</p></div>
+  </div>
+</section>
+
+<!-- PATENTES -->
+<section id="patentes" class="c-pat">
+  <div class="head"><div class="eyebrow">02 · Arts. 6º a 93</div><h2 class="col-pat">Patentes</h2>
+  <p class="sub">Invenção é criação nova, fora do estado da técnica. Modelo de utilidade é nova forma ou disposição de objeto de uso prático que gera melhoria funcional (o telefone vira telefone sem fio; o desktop vira laptop).</p></div>
+
+  <div class="tbl"><table>
+    <thead><tr><th></th><th>Invenção</th><th>Modelo de utilidade</th></tr></thead>
+    <tbody>
+      <tr><td>Conceito</td><td>Algo totalmente novo, ato original do engenho humano <span class="art">art. 8º</span></td><td>Objeto de uso prático (ou parte), nova forma ou disposição, com <b>melhoria funcional</b> no uso ou fabricação <span class="art">art. 9º</span></td></tr>
+      <tr><td>Novidade</td><td colspan="2">Não compreendido no estado da técnica <span class="art">art. 11</span></td></tr>
+      <tr><td>Inventividade</td><td><b>Atividade inventiva</b>: não decorre de maneira <b>evidente ou óbvia</b> do estado da técnica para um técnico <span class="art">art. 13</span></td><td><b>Ato inventivo</b>: não decorre de maneira <b>comum ou vulgar</b> <span class="art">art. 14</span></td></tr>
+      <tr><td>Aplicação industrial</td><td colspan="2">Pode ser utilizado ou produzido em qualquer tipo de indústria <span class="art">art. 15</span></td></tr>
+      <tr><td>Unidade do pedido</td><td>Uma única invenção ou grupo inter-relacionado com <b>um único conceito inventivo</b> <span class="art">art. 22</span></td><td><b>Um único modelo principal</b>, que pode incluir pluralidade de elementos distintos, adicionais ou variantes, desde que mantida a unidade técnico-funcional e corporal <span class="art">art. 23</span></td></tr>
+      <tr><td>Vigência</td><td class="hl">20 anos do depósito</td><td class="hl">15 anos do depósito</td></tr>
+    </tbody></table></div>
+  <p class="muted" style="font-size:.92rem">Além dos três requisitos, o relatório descritivo deve permitir a reprodução por técnico no assunto: <b>suficiência descritiva</b> (art. 24). A extensão da proteção é dada pelas <b>reivindicações</b>, interpretadas com base no relatório e nos desenhos (art. 41).</p>
+
+  <div class="grid2">
+    <div class="block">
+      <h3>Estado da técnica e período de graça</h3>
+      <div class="lei pat"><span class="art">art. 11, §1º</span><p>Tudo o que foi tornado acessível ao público antes do depósito, por descrição escrita ou oral, uso ou outro meio, <b>no Brasil ou no exterior</b>.</p></div>
+      <div class="lei pat"><span class="art">art. 11, §2º</span><p>Pedido depositado no Brasil e ainda não publicado integra o estado da técnica desde o depósito (ou prioridade), <b>desde que venha a ser publicado</b>, mesmo que depois.</p></div>
+      <div class="lei pat"><span class="art">art. 12</span><p>Não entra no estado da técnica a divulgação nos <b>12 meses</b> anteriores ao depósito ou prioridade, se promovida: I. pelo inventor; II. pelo INPI, em publicação sem consentimento do inventor; III. por terceiros com informações obtidas do inventor.</p></div>
+      <div class="box trap"><div class="lbl">Pegadinha</div><p>"Invenção é nova quando compreendida no estado da técnica" (errado, é <b>não</b> compreendida). "Período de graça de 2 anos" (errado, são 12 meses). Desenho industrial tem graça de <b>180 dias</b>.</p></div>
+    </div>
+    <div class="block">
+      <h3>Art. 10 x art. 18</h3>
+      <p><b>Art. 10 · nem é invenção nem MU:</b></p>
+      <ul style="font-size:.93rem">
+        <li>descobertas, teorias científicas e métodos matemáticos</li>
+        <li>concepções puramente abstratas</li>
+        <li>esquemas, planos, princípios ou métodos comerciais, contábeis, financeiros, educativos, publicitários, de sorteio e de fiscalização</li>
+        <li>obras literárias, arquitetônicas, artísticas e científicas ou qualquer criação estética</li>
+        <li><b>programas de computador em si</b> (protegidos por direito autoral, Lei 9.609/98)</li>
+        <li>apresentação de informações; regras de jogo</li>
+        <li><b>técnicas e métodos operatórios ou cirúrgicos</b>, terapêuticos ou de diagnóstico no corpo humano ou animal</li>
+        <li>o todo ou parte de seres vivos naturais e materiais biológicos da natureza, ainda que isolados, inclusive genoma e germoplasma</li>
+      </ul>
+      <p><b>Art. 18 · é invenção, mas não é patenteável:</b></p>
+      <ul style="font-size:.93rem">
+        <li>o contrário à moral, bons costumes, segurança, ordem e saúde públicas</li>
+        <li>substâncias e processos resultantes de <b>transformação do núcleo atômico</b></li>
+        <li>o todo ou parte dos seres vivos, <b>exceto microrganismos transgênicos</b> que atendam aos três requisitos e não sejam mera descoberta (não abrange plantas e animais)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Titularidade</h3>
+    <div class="grid2">
+      <div class="lei pat"><span class="art">art. 6º</span><p>Ao autor é assegurado o direito de obter a patente. Presume-se legitimado o requerente (§1º). Podem requerer: o próprio autor, herdeiros ou sucessores, cessionário, ou quem a lei ou o contrato de trabalho ou de prestação de serviços indicar (§2º). Invenção conjunta: requerida por todos ou qualquer um, com nomeação e qualificação dos demais (§3º). O inventor pode pedir a não divulgação de seu nome (§4º).</p></div>
+      <div class="lei pat"><span class="art">art. 7º · first to file</span><p>Mesma invenção feita de forma independente por dois autores: vence quem provar o <b>depósito mais antigo</b>, independentemente das datas de invenção. A retirada do depósito anterior sem efeitos dá prioridade ao imediatamente posterior.</p></div>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>Invenção do empregado</th><th>Quando</th><th>Titular</th><th>Detalhes</th></tr></thead>
+      <tbody>
+        <tr><td><b>De serviço</b> <span class="art">art. 88</span></td><td>Contrato executado no Brasil cujo objeto é pesquisa ou atividade inventiva, ou que resulta da natureza do serviço</td><td><b>Exclusivamente o empregador</b></td><td>Retribuição limita-se ao salário, salvo contrato. Presume-se feita na vigência do contrato se requerida até <b>1 ano</b> após a extinção do vínculo. O empregador <b>pode</b> conceder participação nos ganhos, que não se incorpora ao salário (art. 89).</td></tr>
+        <tr><td><b>Livre</b> <span class="art">art. 90</span></td><td>Desvinculada do contrato e sem uso de recursos do empregador</td><td><b>Exclusivamente o empregado</b></td><td></td></tr>
+        <tr><td><b>Comum</b> <span class="art">art. 91</span></td><td>Contribuição pessoal do empregado + recursos, dados, meios, instalações do empregador</td><td><b>Comum, em partes iguais</b></td><td>Empregador tem licença exclusiva e paga justa remuneração. Deve iniciar a exploração em <b>1 ano</b> da concessão, sob pena de a patente passar ao empregado. Na cessão, cotitular tem preferência.</td></tr>
+      </tbody></table></div>
+    <p class="muted" style="font-size:.9rem">As regras valem, no que couber, para trabalhador autônomo, estagiário e entidades da Administração (arts. 92 e 93). Por isso, na FIOCRUZ 2010, o estagiário de pesquisa que aperfeiçoou o processo não é titular: o direito é do empregador.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="block">
+      <h3>Procedimento do pedido</h3>
+      <ol style="font-size:.94rem">
+        <li><b>Depósito</b>: exame formal preliminar; se instruído, protocolizado com data de depósito na apresentação <span class="art">art. 20</span>. Pedido incompleto com dados suficientes: exigências em <b>30 dias</b>, sob pena de devolução ou arquivamento <span class="art">art. 21</span>.</li>
+        <li><b>Sigilo</b> por <b>18 meses</b> do depósito ou prioridade mais antiga, depois publicação. O depositante pode pedir publicação antecipada <span class="art">art. 30</span>. Pedido de interesse da defesa nacional tramita em caráter sigiloso, sem esse prazo <span class="art">art. 75</span>.</li>
+        <li>Terceiros podem apresentar documentos e informações até o fim do exame <span class="art">art. 31</span>.</li>
+        <li><b>Pedido de exame</b>: pelo depositante ou qualquer interessado em <b>36 meses</b> do depósito, sob pena de arquivamento <span class="art">art. 33</span>.</li>
+        <li>Parecer pela não patenteabilidade, não enquadramento ou exigência: manifestação em <b>90 dias</b> <span class="art">art. 36</span>.</li>
+        <li><b>Divisão</b> do pedido, de ofício ou a requerimento, <b>até o final do exame</b>, sem exceder a matéria original <span class="art">art. 26</span>.</li>
+        <li><b>Concessão</b>: depois de deferido e comprovado o pagamento, em <b>60 dias</b> do deferimento (ou mais <b>30 dias</b> com retribuição específica, sob pena de arquivamento definitivo). Reputa-se concedida na data da <b>publicação</b> do ato <span class="art">art. 38</span>.</li>
+      </ol>
+    </div>
+    <div class="block">
+      <h3>Prioridade</h3>
+      <div class="lei pat"><span class="art">art. 16 · unionista</span><p>Pedido depositado em país com acordo com o Brasil ou em organização internacional garante prioridade nos prazos do acordo: <b>12 meses</b> para patente e MU, <b>6 meses</b> para desenho e marca (CUP, art. 4º C).</p></div>
+      <div class="lei pat"><span class="art">art. 17 · interna</span><p>Pedido depositado originalmente no Brasil, sem reivindicação de prioridade e não publicado, assegura prioridade ao pedido posterior sobre a mesma matéria, depositado no Brasil pelo mesmo requerente ou sucessores, em <b>1 ano</b>.</p></div>
+      <ul style="font-size:.92rem">
+        <li>A prioridade alcança só a matéria revelada no pedido anterior, não a matéria nova (§1º).</li>
+        <li>O pedido anterior ainda pendente é considerado <b>definitivamente arquivado</b> (§2º).</li>
+        <li>Pedido originário de <b>divisão</b> não pode servir de base de prioridade (§3º).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="block">
+      <h3>Direitos do titular e limites</h3>
+      <div class="lei pat"><span class="art">art. 42</span><p>Impedir terceiro, sem consentimento, de <b>produzir, usar, colocar à venda, vender ou importar</b> o produto patenteado ou o produto obtido diretamente por processo patenteado. Também impedir quem contribua para isso. Na patente de processo, há violação se o possuidor não provar, por determinação judicial, que usou processo diverso (inversão do ônus).</p></div>
+      <p><b>Art. 43 · não há violação:</b></p>
+      <ul style="font-size:.92rem">
+        <li>atos privados sem finalidade comercial, sem prejuízo ao titular</li>
+        <li>finalidade experimental, estudos ou pesquisas</li>
+        <li>medicamento manipulado por profissional habilitado para caso individual, com receita</li>
+        <li>produto colocado no mercado <b>interno</b> pelo titular ou com seu consentimento (exaustão nacional)</li>
+        <li>matéria viva como fonte de variação sem finalidade econômica; circulação de produto vivo introduzido licitamente, sem multiplicação comercial</li>
+        <li>testes para obter registro de comercialização após a expiração da patente (exceção Bolar)</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>Indenização e usuário anterior</h3>
+      <div class="lei pat"><span class="art">art. 44</span><p>Indenização pela exploração indevida, <b>inclusive entre a publicação do pedido e a concessão</b>. Se o infrator conhecia o pedido antes da publicação, conta-se do início da exploração. Limitada ao objeto (reivindicações).</p></div>
+      <div class="lei pat"><span class="art">art. 45 · usuário anterior</span><p>Quem, de boa-fé, explorava o objeto no País <b>antes</b> do depósito ou prioridade continua explorando <b>sem ônus</b>, na forma anterior. O direito só se cede junto com o negócio. Não vale para quem soube pela divulgação do art. 12, se o pedido foi depositado em 1 ano da divulgação.</p></div>
+      <div class="box stjbox"><div class="lbl">STJ</div><p>Para invocar o art. 45, a exploração anterior deve ser da própria parte, não de terceiros.</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Vigência, pipeline e mailbox</h3>
+    <div class="lei pat"><span class="art">art. 40</span><p>Invenção: <b>20 anos</b>; MU: <b>15 anos</b>, contados da data de <b>depósito</b>.</p></div>
+    <div class="grid3">
+      <div class="box stjbox"><div class="lbl">STF · ADI 5529 · Info 1017</div><p>Inconstitucional o parágrafo único do art. 40, que garantia 10 anos (invenção) e 7 anos (MU) contados da concessão. Revogado depois pela Lei 14.195/2021. Modulação: patentes farmacêuticas e de saúde perderam a extensão; ressalvadas ações até 7/4/2021.</p></div>
+      <div class="box stjbox"><div class="lbl">STJ · Info 876 (2026) · Ozempic</div><p>Após a ADI 5529, o Judiciário não pode estender a patente com base na demora do INPI. Vale o prazo de 20 anos do depósito, sem lei com critérios objetivos.</p></div>
+      <div class="box stjbox"><div class="lbl">Mailbox · Tema 1065 · Info 734</div><p>Patentes farmacêuticas e agroquímicas depositadas pelo sistema transitório do TRIPS: proteção da concessão até o remanescente de 20 anos do depósito; nunca se aplicou o prazo mínimo do antigo parágrafo único.</p></div>
+    </div>
+    <div class="box tip"><div class="lbl">Pipeline (arts. 230 e 231)</div><p>Revalidação de patentes estrangeiras de áreas antes não patenteáveis. Vigora pelo <b>prazo remanescente no país do primeiro depósito</b>, até o máximo brasileiro de 20 anos contados do <b>primeiro depósito no exterior</b>, ainda que abandonado (JT 24, tese 18). Não se exigem novidade, atividade inventiva e aplicação industrial do art. 8º, e a patente não pode ser anulada por falta deles (Info 550). O pedido era publicado automaticamente, com manifestação de interessados em 90 dias.</p></div>
+    <div class="box stjbox"><div class="lbl">ANVISA · Info 703</div><p>O art. 229-C (anuência prévia da ANVISA para patentes farmacêuticas) foi <b>revogado</b> pela Lei 14.195/2021. Enquanto vigeu, a ANVISA podia examinar inclusive os requisitos de patenteabilidade sob o ângulo da saúde pública.</p></div>
+  </div>
+
+  <div class="block">
+    <h3>Licenças</h3>
+    <div class="grid2">
+      <div class="lei pat"><span class="art">arts. 61 a 63 · voluntária</span><p>Titular ou depositante pode licenciar. O licenciado pode receber todos os poderes para defender a patente. O contrato deve ser averbado no INPI para valer contra terceiros.</p></div>
+      <div class="lei pat"><span class="art">art. 72</span><p>Licença compulsória é sempre <b>sem exclusividade</b> e <b>sem sublicenciamento</b>. O licenciado deve iniciar a exploração em <b>1 ano</b> da concessão da licença, salvo razões legítimas (art. 74).</p></div>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>Hipótese de licença compulsória</th><th>Regra</th></tr></thead>
+      <tbody>
+        <tr><td>Abuso de direitos ou abuso de poder econômico <span class="art">art. 68, caput</span></td><td>Comprovado por decisão <b>administrativa ou judicial</b>.</td></tr>
+        <tr><td>Não exploração no Brasil por falta de fabricação ou fabricação incompleta, ou falta de uso integral do processo <span class="art">art. 68, §1º, I</span></td><td>Ressalvada inviabilidade econômica (admite importação). Só pode ser requerida após <b>3 anos da concessão</b> (§5º), por quem tenha legítimo interesse e capacidade técnica e econômica (§2º).</td></tr>
+        <tr><td>Comercialização que não satisfaz as necessidades do mercado <span class="art">art. 68, §1º, II</span></td><td>Hipótese autônoma (a FGV fundiu as duas em uma só para tornar a assertiva falsa).</td></tr>
+        <tr><td>Dependência de patentes <span class="art">art. 70</span></td><td>Requisitos <b>cumulativos</b>: dependência entre patentes; substancial progresso técnico da nova; ausência de acordo com o titular da anterior.</td></tr>
+        <tr><td>Emergência nacional ou internacional, interesse público, calamidade pública <span class="art">art. 71</span></td><td>Concedida <b>de ofício</b>, temporária e não exclusiva, sem prejuízo dos direitos do titular, se este não atender à necessidade. Lista de patentes em <b>30 dias</b> da declaração; avaliação em 30 dias prorrogáveis; remuneração provisória de <b>1,5%</b> do preço líquido; para pedido de patente, só se paga se a patente for concedida.</td></tr>
+        <tr><td>Razões humanitárias, exportação <span class="art">art. 71-A</span></td><td>Para países com capacidade farmacêutica insuficiente, nos termos de tratado.</td></tr>
+      </tbody></table></div>
+    <p style="font-size:.93rem"><b>Art. 69 · não se concede</b> se o titular justificar o desuso por razões legítimas, comprovar sérios e efetivos preparativos ou justificar a falta por obstáculo legal.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="block">
+      <h3>Extinção</h3>
+      <div class="lei pat"><span class="art">art. 78</span><p>Expiração do prazo; renúncia (ressalvado direito de terceiros); caducidade; falta de pagamento da retribuição anual; falta de procurador no Brasil para titular domiciliado no exterior (art. 217). Extinta, o objeto cai em <b>domínio público</b>.</p></div>
+      <div class="lei pat"><span class="art">arts. 80 a 83 · caducidade</span><p>De ofício ou a requerimento, se <b>2 anos após a primeira licença compulsória</b> o abuso ou desuso não foi sanado. Titular se manifesta em <b>60 dias</b>, com ônus de provar a exploração; decisão em 60 dias; efeitos a partir do requerimento ou da instauração.</p></div>
+    </div>
+    <div class="block">
+      <h3>Retribuição anual e restauração</h3>
+      <div class="lei pat"><span class="art">arts. 84 a 87</span><p>Retribuição anual a partir do início do <b>3º ano</b> do depósito, paga nos 3 primeiros meses de cada período anual, ou nos 6 meses seguintes com adicional. Notificado do arquivamento ou da extinção, o titular pode <b>restaurar</b> em <b>3 meses da notificação</b>, mediante retribuição específica.</p></div>
+      <div class="box stjbox"><div class="lbl">STJ · Infos 608 e 679</div><p>Arquivamento ou extinção por falta de retribuição exige <b>notificação prévia</b>. É ilegal a resolução do INPI que negava restauração a quem devesse mais de uma anuidade.</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Nulidade da patente</h3>
+    <div class="tbl"><table>
+      <thead><tr><th></th><th>Administrativa <span class="art">arts. 50 a 55</span></th><th>Judicial <span class="art">arts. 56 e 57</span></th></tr></thead>
+      <tbody>
+        <tr><td>Quem</td><td>De ofício ou qualquer pessoa com legítimo interesse</td><td>INPI ou qualquer pessoa com legítimo interesse</td></tr>
+        <tr><td>Prazo</td><td class="hl">6 meses da concessão</td><td class="hl">A qualquer tempo da vigência</td></tr>
+        <tr><td>Defesa do titular</td><td class="hl">60 dias</td><td class="hl">60 dias</td></tr>
+        <tr><td>Observações</td><td>Prossegue ainda que extinta a patente</td><td>Justiça Federal; INPI intervém quando não for autor. Suspensão dos efeitos <b>preventiva ou incidental</b>. Pode ser arguida como <b>matéria de defesa</b> (art. 56, §1º).</td></tr>
+      </tbody></table></div>
+    <p style="font-size:.92rem">Hipóteses (art. 50): não atendidos os requisitos legais; relatório e reivindicações sem os arts. 24 e 25; objeto que ultrapassa o pedido original; omissão de formalidade essencial. A nulidade produz efeitos desde o <b>depósito</b> (art. 48).</p>
+  </div>
+
+  <div class="box tip"><div class="lbl">Conceitos farmacêuticos (TRF1 2023)</div>
+    <p><b>Patente de segundo uso</b>: proteção para nova aplicação terapêutica de substância conhecida. <b>Evergreening</b> (gestão do ciclo de vida): acusação de perpetuar artificialmente o monopólio com patentes sucessivas. <b>Skinny labeling</b> (indicação magra): o genérico pode ser vendido para os usos livres, excluída da bula a indicação ainda protegida.</p></div>
+</section>
+
+<!-- DESENHO -->
+<section id="desenho" class="c-des">
+  <div class="head"><div class="eyebrow">03 · Arts. 94 a 121</div><h2 class="col-des">Desenho industrial</h2>
+  <p class="sub">Protege o aspecto visual, não a função. Celulares com a mesma utilidade se diferenciam pelo design; o facelift de um carro é desenho industrial.</p></div>
+  <div class="grid2">
+    <div class="block">
+      <div class="lei des"><span class="art">art. 95</span><p>Forma plástica <b>ornamental</b> de um objeto ou conjunto ornamental de linhas e cores aplicável a um produto, com resultado visual <b>novo e original</b> na configuração externa, que possa servir de tipo de fabricação industrial.</p></div>
+      <div class="lei des"><span class="art">arts. 96 e 97</span><p><b>Novo</b>: não compreendido no estado da técnica. Graça de <b>180 dias</b> (art. 96, §3º). <b>Original</b>: configuração visual distintiva em relação a objetos anteriores.</p></div>
+      <div class="lei des"><span class="art">art. 98</span><p>Não se considera desenho industrial obra de caráter <b>puramente artístico</b>.</p></div>
+      <div class="lei des"><span class="art">art. 100 · não registrável</span><p>I. o contrário à moral, aos bons costumes, à honra ou imagem de pessoas, à liberdade de crença e sentimentos dignos de respeito; II. a forma <b>necessária, comum ou vulgar</b> ou determinada essencialmente por considerações <b>técnicas ou funcionais</b>.</p></div>
+    </div>
+    <div class="block">
+      <h3>Pedido e concessão</h3>
+      <ul style="font-size:.93rem">
+        <li>Exame formal preliminar; se instruído, protocolizado com data de depósito na apresentação <span class="art">art. 102</span>.</li>
+        <li>Pedido sem formalidades mas com dados suficientes do depositante, desenho e autor: entregue mediante recibo, exigências em <b>5 dias</b>, sob pena de ser considerado inexistente <span class="art">art. 103</span>.</li>
+        <li>Um único objeto, admitida pluralidade de <b>até 20 variações</b>, com a mesma finalidade e a mesma característica distintiva preponderante <span class="art">art. 104</span>.</li>
+        <li>Sigilo a pedido, por <b>180 dias</b> do depósito; o pedido pode ser retirado nesse período <span class="art">art. 106, §§1º e 2º</span>.</li>
+        <li>Publicado e <b>concedido automaticamente</b>, sem exame de mérito <span class="art">art. 106</span>. O exame de mérito pode ser requerido pelo titular a qualquer tempo da vigência <span class="art">art. 111</span>.</li>
+      </ul>
+      <div class="box trap"><div class="lbl">TJPE 2024</div><p>Errado: "vedada qualquer pluralidade de variações" (até 20); "sigilo de 120 dias" (180); "o INPI não pode receber pedido sem toda a documentação" (pode, com dados suficientes e exigências em 5 dias).</p></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="block">
+      <h3>Vigência e retribuição</h3>
+      <div class="lei des"><span class="art">art. 108</span><p><b>10 anos do depósito</b>, prorrogáveis por <b>3 períodos sucessivos de 5 anos</b> (máximo 25). Prorrogação no último ano de vigência; se perdida, mais <b>180 dias</b> com retribuição adicional.</p></div>
+      <div class="lei des"><span class="art">art. 120</span><p>Retribuição <b>quinquenal</b> a partir do 2º quinquênio, paga durante o <b>5º ano</b>; os demais com o pedido de prorrogação; mais 6 meses com adicional.</p></div>
+      <div class="box stjbox"><div class="lbl">STJ · Info 578</div><p>O prazo da retribuição quinquenal conta-se do <b>depósito</b>, não do certificado.</p></div>
+    </div>
+    <div class="block">
+      <h3>Nulidade e extinção</h3>
+      <ul style="font-size:.93rem">
+        <li>Nulidade administrativa: de ofício ou a requerimento em <b>5 anos da concessão</b> <span class="art">art. 113, §1º</span>; titular se manifesta em <b>60 dias</b> <span class="art">art. 114</span>.</li>
+        <li>Ação de nulidade: aplicam-se os arts. 56 e 57 (a qualquer tempo da vigência, JF, resposta em 60 dias) <span class="art">art. 118</span>.</li>
+        <li>Extinção: expiração, renúncia, falta de retribuição, falta de procurador <span class="art">art. 119</span>.</li>
+      </ul>
+      <div class="box stjbox"><div class="lbl">STJ · Info 820</div><p>Novidade estética divulgada <b>sem registro</b> no INPI entra no estado da técnica e pode ser usada por terceiros sem autorização (caso das bonecas). Sistema atributivo.</p></div>
+      <div class="box stjbox"><div class="lbl">STJ · Info 750</div><p>Novo formato gráfico de resultados de busca na internet não tem proteção de desenho industrial nem de direito autoral; ideias não são protegidas (LDA, art. 8º).</p></div>
+    </div>
+  </div>
+  <div class="box tip"><div class="lbl">Desenho industrial x trade dress</div><p>Desenho industrial depende de registro e protege a forma ornamental do objeto. Trade dress (conjunto-imagem) não tem lei específica, não depende de registro e é tutelado pela repressão à concorrência desleal. Ver seção IG e desleal.</p></div>
+</section>
+
+<!-- MARCAS -->
+<section id="marcas" class="c-mar">
+  <div class="head"><div class="eyebrow">04 · Arts. 122 a 175</div><h2 class="col-mar">Marcas</h2>
+  <p class="sub">Sinal distintivo <b>visualmente perceptível</b> (art. 122). Por isso não há registro de marca sonora ou olfativa no Brasil.</p></div>
+  <div class="grid3">
+    <div class="block"><h4>Produto ou serviço</h4><p style="font-size:.93rem">Distingue produto ou serviço de outro idêntico, semelhante ou afim, de origem diversa <span class="art">art. 123, I</span>.</p></div>
+    <div class="block"><h4>Certificação</h4><p style="font-size:.93rem">Atesta conformidade com normas ou especificações técnicas (qualidade, natureza, material, metodologia). Só pode ser requerida por quem <b>não tem interesse comercial ou industrial direto</b> no produto <span class="art">arts. 123, II; 128, §3º</span>. Ex.: ISO 9001.</p></div>
+    <div class="block"><h4>Coletiva</h4><p style="font-size:.93rem">Identifica produtos ou serviços de <b>membros de uma entidade</b>. Só pessoa jurídica representativa da coletividade pode requerer, e pode ter atividade distinta da dos membros <span class="art">arts. 123, III; 128, §2º</span>.</p></div>
+  </div>
+
+  <div class="block">
+    <h3>Art. 124 · não registráveis (incisos mais cobrados)</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Inciso</th><th>Proibição</th><th>Ponto de prova</th></tr></thead>
+      <tbody>
+        <tr><td class="hl">I</td><td>Brasão, armas, medalha, bandeira, emblema, distintivo e monumento oficiais</td><td>Usar em marca, título ou sinal de propaganda é crime do art. 191 (ação pública)</td></tr>
+        <tr><td class="hl">II</td><td>Letra, algarismo e data <b>isoladamente</b></td><td><b>Salvo</b> quando revestidos de suficiente forma distintiva (não é "terminantemente proibido")</td></tr>
+        <tr><td class="hl">V</td><td>Reprodução de elemento característico de título de estabelecimento ou nome de empresa de terceiro, suscetível de confusão</td><td>Nome empresarial só impede marca se protegido nacionalmente (Info 548, Multimed)</td></tr>
+        <tr><td class="hl">VI</td><td>Sinal genérico, necessário, comum, vulgar ou simplesmente descritivo relacionado ao produto</td><td>Salvo forma distintiva. Marcas fracas convivem (Rose &amp; Bleu, Info 753; SPA)</td></tr>
+        <tr><td class="hl">VII</td><td>Sinal ou expressão empregada <b>apenas</b> como meio de propaganda</td><td>Não há mais registro de sinal de propaganda (era do código antigo). Se houver outros elementos distintivos, registra-se, com apostila sem exclusividade da frase (Theraskin, Info 827)</td></tr>
+        <tr><td class="hl">VIII</td><td>Cores e suas denominações</td><td>Salvo se dispostas ou combinadas de modo peculiar e distintivo</td></tr>
+        <tr><td class="hl">IX e X</td><td>Indicação geográfica e sinal que induza falsa origem, procedência ou qualidade</td><td></td></tr>
+        <tr><td class="hl">XIII</td><td>Nome, prêmio ou símbolo de evento esportivo, artístico, cultural etc., oficial</td><td>Nulo o registro de "Fogo Olímpico" (Info 693). Associação sem fins lucrativos pode usar "paraolímpico" (Info 756)</td></tr>
+        <tr><td class="hl">XV</td><td>Nome civil, assinatura, patronímico e imagem de terceiros</td><td>Salvo consentimento, que é <b>específico para cada registro, classe e item</b> (Albert Einstein, Infos 654 e 712)</td></tr>
+        <tr><td class="hl">XVI</td><td>Pseudônimo ou apelido notório, nome artístico</td><td>Salvo consentimento</td></tr>
+        <tr><td class="hl">XVII</td><td>Obra e títulos protegidos por direito autoral, suscetíveis de confusão</td><td>Salvo consentimento</td></tr>
+        <tr><td class="hl">XVIII</td><td>Termo técnico relacionado ao produto</td><td></td></tr>
+        <tr><td class="hl">XIX</td><td>Reprodução ou imitação de marca alheia registrada para produto idêntico, semelhante ou afim, com risco de confusão ou associação</td><td>Basta a possibilidade de confusão (JT 24, tese 7). Red Bull x Power Bull (Info 692): associação indevida e diluição</td></tr>
+        <tr><td class="hl">XXI</td><td>Forma necessária, comum ou vulgar do produto, ou indissociável de efeito técnico</td><td></td></tr>
+        <tr><td class="hl">XXIII</td><td>Sinal que imite marca que o requerente evidentemente não poderia desconhecer</td><td>Proteção contra registro de má-fé</td></tr>
+      </tbody></table></div>
+    <div class="box stjbox"><div class="lbl">STJ · Info 702</div><p>Símbolo partidário <b>pode</b> ser registrado como marca, mesmo por agremiação que não exerça atividade empresarial; convivem as proteções eleitoral e marcária.</p></div>
+  </div>
+
+  <div class="block">
+    <h3>Alto renome x notoriamente conhecida</h3>
+    <div class="tbl"><table>
+      <thead><tr><th></th><th>Alto renome <span class="art">art. 125</span></th><th>Notoriamente conhecida <span class="art">art. 126</span></th></tr></thead>
+      <tbody>
+        <tr><td>Exceção a</td><td>Princípio da <b>especialidade</b></td><td>Princípio da <b>territorialidade</b></td></tr>
+        <tr><td>Alcance</td><td><b>Todos</b> os ramos de atividade</td><td>Somente <b>seu ramo</b> de atividade</td></tr>
+        <tr><td>Registro no Brasil</td><td><b>Exige</b> registro prévio no Brasil</td><td><b>Independe</b> de depósito ou registro no Brasil</td></tr>
+        <tr><td>Reconhecimento</td><td>Procedimento administrativo no INPI (não o Judiciário). Efeitos <b>prospectivos</b> (Info 709). O titular pode pedir declaração pela via direta (Info 517)</td><td>Fonte: CUP, art. 6º bis. O INPI pode <b>indeferir de ofício</b> pedido que a reproduza (§2º). Vale também para marcas de serviço</td></tr>
+        <tr><td>Diluição</td><td>Única categoria protegida contra diluição (Info 709)</td><td></td></tr>
+      </tbody></table></div>
+    <div class="grid2">
+      <div class="box stjbox"><div class="lbl">Natura Recreio · Vogue Square · Infos 657 e 784</div><p>Marca, ainda que de alto renome, não impede o uso do nome em edifício ou empreendimento imobiliário: dar nome a prédio é ato da vida civil, e não houve confusão.</p></div>
+      <div class="box stjbox"><div class="lbl">Prada · mitigação da especialidade</div><p>Produtos em classes distintas com afinidade especial podem justificar proteção além da classe (higiene pessoal com marca de moda).</p></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="block">
+      <h3>Princípios</h3>
+      <p><b>Especialidade (especificidade)</b>: marcas idênticas convivem em ramos diversos. A exclusividade se limita, em regra, à classe (JT 24, tese 6). Exceções: alto renome e diluição. Ex.: Careaçu custódia de títulos x Careaçu auditoria contábil podem coexistir (TRF6 2025). Mas "Crescer" pedagógico x escola "Crescer": mesma classe de educação, há violação (Info 548).</p>
+      <p><b>Territorialidade</b>: proteção no território nacional. Exceção: marca notoriamente conhecida.</p>
+      <p><b>Colidência</b> (JT 24, tese 16): apreciar sucessivamente, pelas semelhanças e não pelas diferenças, e pela impressão de conjunto.</p>
+      <div class="box stjbox"><div class="lbl">Marcas fracas · Infos 526, 646, 769</div><p>Marcas evocativas, descritivas ou sugestivas convivem com semelhantes (JT 24, tese 4). America Air x American Airlines; Extra x Extrabom. A distintividade adquirida (secondary meaning) não gera exclusividade automática.</p></div>
+      <div class="box stjbox"><div class="lbl">Neutrox x Tratex · Info 752</div><p>Semelhança e afinidade não bastam: a coexistência deve ser apta a causar confusão ou prejuízo.</p></div>
+    </div>
+    <div class="block">
+      <h3>Aquisição, direitos e limites</h3>
+      <div class="lei mar"><span class="art">art. 128</span><p>Podem requerer pessoas físicas ou jurídicas de direito público ou privado. As de direito privado só para atividade que exerçam efetiva e licitamente, direta ou por controladas.</p></div>
+      <div class="lei mar"><span class="art">art. 129</span><p>A propriedade se adquire pelo <b>registro validamente expedido</b>, com uso exclusivo em todo o território nacional. <b>Precedência</b> (§1º): quem, de boa-fé, usava no País há pelo menos <b>6 meses</b> marca idêntica ou semelhante para produto idêntico, semelhante ou afim. Só se cede com o negócio (§2º).</p></div>
+      <div class="lei mar"><span class="art">art. 130</span><p>Ao <b>titular ou ao depositante</b>: ceder o registro ou pedido, licenciar o uso e zelar pela integridade material e reputação. Não é "apenas o titular" (TJAM 2013).</p></div>
+      <div class="lei mar"><span class="art">art. 132 · o titular não pode impedir</span><p>Comerciantes de usar seus sinais junto com a marca; fabricantes de acessórios de indicar a destinação; a livre circulação de produto colocado no mercado <b>interno</b> por ele ou com consentimento; a citação em discurso ou obra sem conotação comercial.</p></div>
+      <div class="box stjbox"><div class="lbl">Importação paralela · Info 514</div><p>Em regra proibida sem consentimento do titular. Se ele tolerava e passou a recusar de repente, o antigo importador não pode continuar, mas tem direito a lucros cessantes.</p></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="block">
+      <h3>Pedido e vigência</h3>
+      <ul style="font-size:.93rem">
+        <li>Pedido incompleto com dados suficientes: exigências em <b>5 dias</b> <span class="art">art. 157</span>.</li>
+        <li><b>Oposição</b> em <b>60 dias</b> da publicação do pedido <span class="art">art. 158</span>. A falta de oposição <b>não</b> impede a ação de nulidade pelo titular do direito de precedência (TRF1 2025).</li>
+        <li>Certificado: pagar em <b>60 dias</b> do deferimento, ou mais <b>30 dias</b> com retribuição específica; reputa-se concedido na publicação <span class="art">arts. 161 a 163</span>.</li>
+        <li><b>Vigência</b>: <b>10 anos da concessão</b>, prorrogável por períodos iguais e sucessivos. Prorrogação no último ano; perdido o prazo, mais <b>6 meses</b> com adicional <span class="art">art. 133</span>.</li>
+      </ul>
+      <div class="box stjbox"><div class="lbl">Info 892 (2026)</div><p>Processo de caducidade pendente, mesmo com recurso de efeito suspensivo, <b>não</b> é justa causa para deixar de pedir a prorrogação. O ônus continua com o titular; perdido o prazo, o registro se extingue.</p></div>
+    </div>
+    <div class="block">
+      <h3>Licença, extinção e caducidade</h3>
+      <ul style="font-size:.93rem">
+        <li>Licença de uso sem prejuízo do controle sobre especificações e qualidade; licenciado pode receber poderes de defesa <span class="art">art. 139</span>. Averbação no INPI para efeito contra terceiros, desde a publicação; não precisa estar averbada para provar uso <span class="art">art. 140</span>.</li>
+        <li>Desrespeito à nova padronização autoriza o titular a impedir o uso (Info 538; JT 24, tese 15).</li>
+        <li><b>Extinção</b> <span class="art">art. 142</span>: expiração; renúncia total ou parcial; caducidade; falta de procurador (art. 217).</li>
+        <li><b>Caducidade</b> <span class="art">art. 143</span>: a requerimento de interessado, decorridos <b>5 anos da concessão</b>, se o uso não começou no Brasil ou foi interrompido por mais de 5 anos consecutivos, ou se usada com alteração do caráter distintivo. Titular se manifesta em <b>60 dias</b> com ônus da prova. Caducidade parcial para produtos não usados (art. 144). Não se conhece novo pedido se o uso foi provado em processo requerido há menos de 5 anos (art. 145). Efeitos <b>ex nunc</b> (JT 24, tese 14).</li>
+      </ul>
+      <div class="box stjbox"><div class="lbl">Info 563</div><p>Fabricar no Brasil só para exportação é uso da marca. Uso esporádico e inexpressivo para o porte da empresa permite caducidade.</p></div>
+      <div class="box stjbox"><div class="lbl">Joca Cola · Info 666</div><p>Renúncia (ex nunc) não faz perder o objeto da ação de nulidade (ex tunc).</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Nulidade do registro de marca</h3>
+    <div class="tbl"><table>
+      <thead><tr><th></th><th>Administrativa <span class="art">arts. 168 a 172</span></th><th>Judicial <span class="art">arts. 173 a 175</span></th></tr></thead>
+      <tbody>
+        <tr><td>Quem</td><td>De ofício ou qualquer pessoa com legítimo interesse</td><td>INPI ou qualquer pessoa com legítimo interesse</td></tr>
+        <tr><td>Prazo</td><td class="hl">180 dias da expedição do certificado</td><td class="hl">Prescreve em 5 anos da concessão</td></tr>
+        <tr><td>Defesa do titular</td><td class="hl">60 dias</td><td class="hl">60 dias</td></tr>
+        <tr><td>Decisão</td><td>Presidente do INPI, encerrando a instância administrativa; prossegue ainda que extinto o registro</td><td>Justiça Federal; INPI intervém quando não for autor; liminar de suspensão do registro e do uso</td></tr>
+      </tbody></table></div>
+    <ul style="font-size:.93rem">
+      <li>Nulidade total ou parcial (a parcial exige que o restante seja registrável); efeitos <b>ex tunc</b>, desde o depósito <span class="art">arts. 165 e 167</span>.</li>
+      <li>Não há exigência de esgotar a via administrativa; os processos são autônomos.</li>
+      <li>Prescrição de 5 anos não é afastada pela teoria dualista das nulidades (Info 648). Exceção: CUP art. 6º bis, item 3, marca <b>notória</b> + <b>má-fé</b> do registrante tornam a ação imprescritível (Info 817, Speedo).</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3>Nome empresarial x marca</h3>
+    <div class="tbl"><table>
+      <thead><tr><th></th><th>Nome empresarial <span class="art">CC, art. 1.155 e ss.</span></th><th>Marca <span class="art">LPI</span></th></tr></thead>
+      <tbody>
+        <tr><td>Identifica</td><td>O empresário, a própria atividade</td><td>O produto ou serviço, perante o consumidor</td></tr>
+        <tr><td>Onde se protege</td><td>Junta Comercial (estadual); proteção nacional só com arquivamento nas demais Juntas</td><td>INPI; todo o território nacional</td></tr>
+        <tr><td>Ramo</td><td>Proteção independe do ramo</td><td>Proteção depende do ramo (especialidade)</td></tr>
+      </tbody></table></div>
+    <p class="muted" style="font-size:.9rem">Insígnia (logotipo, o "M" do McDonald's) e slogan são outros sinais. O slogan é protegido pela repressão à concorrência desleal (art. 195, IV), não por registro.</p>
+  </div>
+</section>
+
+<!-- IG E DESLEAL -->
+<section id="ig" class="c-ig">
+  <div class="head"><div class="eyebrow">05 · Arts. 176 a 182 e 195, 207 a 210</div><h2 class="col-ig">Indicação geográfica e concorrência desleal</h2></div>
+  <div class="block">
+    <h3>Indicação geográfica</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Indicação de procedência <span class="art">art. 177</span></th><th>Denominação de origem <span class="art">art. 178</span></th></tr></thead>
+      <tbody><tr>
+        <td>Nome geográfico que se tornou <b>conhecido</b> como centro de extração, produção ou fabricação de produto ou prestação de serviço. Basta a <b>fama</b>.</td>
+        <td>Nome geográfico que designa produto ou serviço cujas qualidades se devem <b>exclusiva ou essencialmente ao meio geográfico</b>, incluídos fatores naturais e humanos.</td>
+      </tr></tbody></table></div>
+    <ul style="font-size:.93rem">
+      <li>A proteção alcança a <b>representação gráfica ou figurativa</b> da IG e a representação geográfica do local <span class="art">art. 179</span>.</li>
+      <li>Nome geográfico que virou de uso comum não é IG <span class="art">art. 180</span>.</li>
+      <li>Nome geográfico que não seja IG <b>pode</b> ser elemento de marca, se não induzir falsa procedência <span class="art">art. 181</span>.</li>
+      <li>Uso restrito aos produtores estabelecidos no local; requisitos de qualidade só para a <b>denominação de origem</b> <span class="art">art. 182</span>.</li>
+    </ul>
+    <div class="box trap"><div class="lbl">Pegadinha clássica</div><p>A FGV troca os conceitos: a definição de "fama" é da indicação de procedência; a de "meio geográfico" é da denominação de origem.</p></div>
+  </div>
+
+  <div class="grid2">
+    <div class="block">
+      <h3>Concorrência desleal no cível</h3>
+      <div class="lei ig"><span class="art">art. 207</span><p>O prejudicado pode propor as ações cíveis <b>independentemente da ação criminal</b>.</p></div>
+      <div class="lei ig"><span class="art">art. 208</span><p>A indenização será determinada pelos benefícios que o prejudicado teria auferido se a violação não tivesse ocorrido.</p></div>
+      <div class="lei ig"><span class="art">art. 209</span><p>Perdas e danos também por atos de violação e de concorrência desleal <b>não previstos</b> na LPI. O juiz pode, nos autos da própria ação, <b>liminarmente</b>, antes da citação, sustar a violação, mediante caução em dinheiro ou garantia fidejussória (§1º).</p></div>
+      <div class="lei ig"><span class="art">art. 210 · lucros cessantes</span><p>Critério <b>mais favorável</b> ao prejudicado entre: I. o que ele teria ganho; II. o que o infrator ganhou; III. a remuneração de uma licença hipotética. Não autoriza método arbitrário: exige perícia técnica adequada (Info 789).</p></div>
+    </div>
+    <div class="block">
+      <h3>Jurisprudência de desleal</h3>
+      <div class="box stjbox"><div class="lbl">Links patrocinados · Infos 747, 785, Extra 20</div><p>Comprar a marca do concorrente como palavra-chave no Google Ads é concorrência desleal (meio fraudulento para desviar clientela), dispensada prova de prejuízo concreto. Requisitos: palavra-chave igual a marca ou nome empresarial; mesmo ramo; aptidão para violar as funções identificadora e de investimento.</p></div>
+      <div class="box stjbox"><div class="lbl">Propaganda comparativa · Infos 550 e 781</div><p>Lícita se esclarece o consumidor, é verdadeira e objetiva, não deprecia e não gera confusão. Se ofensiva: dano moral <b>in re ipsa</b>; dano material só com prova do prejuízo.</p></div>
+      <div class="box stjbox"><div class="lbl">Ex-empregado · Info 849</div><p>Desvio de clientela por empregado só é desleal durante o contrato; depois, apenas com cláusula de não concorrência.</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Trade dress (conjunto-imagem)</h3>
+    <p>Soma de elementos visuais e sensitivos (forma da embalagem, cores, fontes, modo de prestar o serviço) que identificam o produto. Não tem lei específica nem depende de registro; protege-se pela repressão à concorrência desleal. Exemplos do seu material: caixinha do China in Box, Duvel x Deuce.</p>
+    <div class="grid2">
+      <div class="box stjbox"><div class="lbl">Requisitos cumulativos · Info 715</div><ol><li>ausência de caráter meramente funcional</li><li>distintividade</li><li>confusão ou associação indevida</li><li>anterioridade de uso</li></ol></div>
+      <div class="box stjbox"><div class="lbl">Prova e competência · Infos 612, 641, 618</div><p>É indispensável <b>perícia técnica</b>; indeferi-la é cerceamento de defesa. A ação de trade dress entre particulares é da <b>Justiça Estadual</b> (Tema 950). Estampas, bordados e rendas podem ter proteção de direito autoral (Info 715).</p></div>
+    </div>
+    <div class="box stjbox"><div class="lbl">Ilícito continuado · Extra 12</div><p>Uso de embalagens semelhantes se renova no tempo: a prescrição só atinge o período anterior ao marco, para tutela reparatória e inibitória.</p></div>
+    <div class="box stjbox"><div class="lbl">Cores de lata de cerveja</div><p>Mesma cor de embalagem, sem formar conjunto-imagem peculiar, não é concorrência desleal (art. 124, VIII).</p></div>
+  </div>
+</section>
+
+<!-- PROCESSO -->
+<section id="processo">
+  <div class="head"><div class="eyebrow">06 · Competência e ações</div><h2>Processo e competência</h2>
+  <p class="sub">O tema que mais aparece em prova de magistratura FGV. Pergunte sempre: a ação mexe na validade do registro (INPI, Justiça Federal) ou só discute uso entre particulares (Justiça Estadual)?</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Situação</th><th>Competência</th><th>Base</th></tr></thead>
+    <tbody>
+      <tr><td>Ação de nulidade de registro de <b>marca</b></td><td><b>Federal</b>, com INPI obrigatório</td><td>art. 175; JT 24, tese 11</td></tr>
+      <tr><td>Ação de nulidade de <b>patente</b> ou <b>desenho</b></td><td><b>Federal</b>, INPI intervém</td><td>arts. 57 e 118</td></tr>
+      <tr><td>Nulidade de patente ou desenho arguida <b>como defesa</b> em ação de infração</td><td><b>Estadual</b>, incidenter tantum, sem INPI; efeitos só <b>inter partes</b>, serve apenas para julgar improcedente a ação de infração</td><td>arts. 56, §1º, e 118; Info 682; 2ª Seção, Info 818</td></tr>
+      <tr><td>Nulidade de <b>marca</b> como defesa ou em reconvenção na Justiça Estadual</td><td><b>Não cabe</b>. A JE não pode negar proteção ao registro sem prévia nulidade na JF</td><td>Info 667 (Poliedro); REsp 1.132.449</td></tr>
+      <tr><td>Abstenção de uso cumulada com nulidade de marca</td><td><b>Federal</b>, inclusive tutela provisória</td><td>Tema 950, Info 618</td></tr>
+      <tr><td>Trade dress, concorrência desleal, abstenção e indenização entre particulares</td><td><b>Estadual</b></td><td>Tema 950</td></tr>
+      <tr><td>Nulidade de marca + indenização contra o particular</td><td><b>Não cumulam</b> (indenização vai para a JE)</td><td>Infos 519 e 716</td></tr>
+      <tr><td>Ação de abstenção e indenização na JE x nulidade na JF</td><td>Não há coisa julgada entre elas</td><td>Info Especial 9</td></tr>
+    </tbody></table></div>
+
+  <div class="grid2">
+    <div class="block">
+      <h3>O INPI na ação de nulidade de marca</h3>
+      <ul style="font-size:.93rem">
+        <li>Se não for autor, intervém obrigatoriamente como <b>assistente especial</b>, intervenção sui generis (atípica), em litisconsórcio dinâmico; não defende necessariamente o registro (Info 686). Não é amicus curiae.</li>
+        <li>Tem legitimidade para recorrer de decisão que extinguiu reconvenção de litisconsorte pedindo nulidade (Info 644).</li>
+        <li>Se deu causa (concedeu indevidamente e não decidiu o pedido administrativo), responde solidariamente por honorários, mesmo reconhecendo o pedido; é isento de custas, mas reembolsa despesas do autor quando sucumbente (Info 576).</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>Indenização e prescrição</h3>
+      <ul style="font-size:.93rem">
+        <li>Uso indevido de marca: dano material presumido (an debeatur), valor apurado em liquidação; dano moral <b>in re ipsa</b> (Info 619).</li>
+        <li>Comerciante responde <b>solidariamente</b> com o fabricante de produto contrafeito (Info 666; CC, art. 942).</li>
+        <li>Licenciado que usa licitamente o desenho tem legitimidade para agir contra o contrafator.</li>
+        <li><b>5 anos</b> para reparação de dano à propriedade industrial <span class="art">art. 225; Súmula 143</span>. O termo inicial é a violação e se renova enquanto durar o uso (Info 524; JT 24, tese 10). A pretensão de abstenção nasce com a violação (Info 593). Seu material registra que a 3ª Turma aplica <b>10 anos</b> (CC, art. 205) à pretensão inibitória de abstenção.</li>
+        <li>Royalties de licença de cultivares: 5 anos, CC art. 206, §5º, I (Info 698).</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box stjbox"><div class="lbl">INPI e contratos de tecnologia · Info 599</div><p>Contratos de transferência de tecnologia precisam ser averbados ou registrados no INPI para valer contra terceiros (art. 211), e o INPI pode exigir a alteração de cláusulas abusivas ou ilegais.</p></div>
+  <div class="box stjbox"><div class="lbl">Cultivares e transgenia · IAC 4, Info 658</div><p>Os privilégios do agricultor da Lei de Cultivares não se opõem ao titular de patente de transgenia presente na semente.</p></div>
+  <div class="box tip"><div class="lbl">Atos do INPI</div><p>Produzem efeitos a partir da publicação no órgão oficial, <b>ressalvadas</b> as decisões notificadas por via postal ou por ciência no processo (art. 226). A alternativa que diz "inclusive" está errada.</p></div>
+</section>
+
+<!-- CRIMES -->
+<section id="crimes" class="c-crime">
+  <div class="head"><div class="eyebrow">07 · Arts. 183 a 206</div><h2 style="color:var(--crime)">Crimes contra a propriedade industrial</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Crime</th><th>Condutas</th><th>Pena (detenção)</th></tr></thead>
+    <tbody>
+      <tr><td>Patente <span class="art">art. 183</span></td><td>Fabricar produto patenteado; usar meio ou processo patenteado</td><td class="pzc hl">3 meses a 1 ano, ou multa</td></tr>
+      <tr><td>Patente <span class="art">art. 184</span></td><td>Exportar, vender, expor, ter em estoque, ocultar, receber com fins econômicos; importar produto não colocado no mercado externo pelo titular</td><td class="hl">1 a 3 meses, ou multa</td></tr>
+      <tr><td>Patente <span class="art">art. 185</span></td><td>Fornecer componente ou equipamento que induza necessariamente à exploração da patente</td><td class="hl">1 a 3 meses, ou multa</td></tr>
+      <tr><td>Desenho <span class="art">art. 187</span></td><td>Fabricar produto com desenho registrado ou imitação substancial</td><td class="hl">3 meses a 1 ano, ou multa</td></tr>
+      <tr><td>Desenho <span class="art">art. 188</span></td><td>Comercializar ou importar o objeto</td><td class="hl">1 a 3 meses, ou multa</td></tr>
+      <tr><td>Marca <span class="art">art. 189</span></td><td>Reproduzir ou imitar marca registrada; alterar marca já aposta</td><td class="hl">3 meses a 1 ano, ou multa</td></tr>
+      <tr><td>Marca <span class="art">art. 190</span></td><td>Importar, exportar, vender, ter em estoque produto com marca ilícita ou em embalagem com marca alheia</td><td class="hl">1 a 3 meses, ou multa</td></tr>
+      <tr><td>Por meio de marca <span class="art">art. 191</span></td><td>Reproduzir armas, brasões ou distintivos oficiais em marca, título, nome, insígnia ou sinal de propaganda</td><td class="hl">1 a 3 meses, ou multa</td></tr>
+      <tr><td>Concorrência desleal <span class="art">art. 195</span></td><td>14 incisos (falsa afirmação, desvio de clientela por meio fraudulento, uso de sinal de propaganda alheio, suborno de empregado, uso de segredo, falsa alegação de patente etc.)</td><td class="hl">3 meses a 1 ano, ou multa</td></tr>
+    </tbody></table></div>
+  <p class="muted" style="font-size:.9rem">Regra prática: <b>fabricar ou reproduzir</b> = 3 meses a 1 ano; <b>comercializar, importar, fornecer</b> = 1 a 3 meses.</p>
+  <div class="grid2">
+    <div class="block">
+      <h3>Disposições gerais</h3>
+      <ul style="font-size:.93rem">
+        <li>Crime contra patente ocorre mesmo que a violação não atinja todas as reivindicações ou use meios equivalentes <span class="art">art. 186</span>.</li>
+        <li>Aumento de <b>1/3 à metade</b>: agente é ou foi representante, sócio ou empregado do titular ou licenciado; ou a marca é de alto renome, notória, de certificação ou coletiva <span class="art">art. 196</span>.</li>
+        <li>Multa de <b>10 a 360 dias-multa</b>, aumentável ou reduzível em até 10 vezes <span class="art">art. 197</span>.</li>
+        <li>Autoridades alfandegárias podem apreender, <b>de ofício ou a requerimento</b>, produtos com marca falsificada ou falsa indicação de procedência <span class="art">art. 198</span>. Não é o Ministério Público.</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>Ação penal e diligências</h3>
+      <div class="lei"><span class="art">art. 199</span><p>Procede-se mediante <b>queixa</b>, salvo o crime do <b>art. 191</b>, de ação penal <b>pública</b>. Não é pública condicionada (MPGO 2026).</p></div>
+      <ul style="font-size:.93rem">
+        <li>Busca e apreensão em crime contra patente de <b>processo</b>: oficial acompanhado de <b>perito</b>, que verifica preliminarmente o ilícito <span class="art">art. 201</span>.</li>
+        <li>Estabelecimento legalmente organizado e funcionando publicamente: só vistoria e apreensão de produtos, <b>sem paralisar</b> a atividade lícita <span class="art">art. 203</span>.</li>
+        <li>Requerente de má-fé, por emulação, capricho ou erro grosseiro responde por perdas e danos <span class="art">art. 204</span>.</li>
+        <li>Nulidade da patente ou registro pode ser defesa na ação penal, mas a absolvição <b>não anula</b> o título <span class="art">art. 205</span>.</li>
+        <li>Informações confidenciais reveladas em juízo: <b>segredo de justiça</b> <span class="art">art. 206</span>.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- AUTORAL -->
+<section id="autoral">
+  <div class="head"><div class="eyebrow">08 · Fronteira · Lei 9.610/98</div><h2>Direito autoral, o que separa da LPI</h2>
+  <p class="sub">Resumo do seu material para não confundir na prova. Direito autoral nasce com a criação, registro facultativo (art. 18), bens móveis (art. 3º), negócios interpretados restritivamente (art. 4º). Ideias, projetos e títulos isolados não são protegidos (art. 8º).</p></div>
+  <div class="grid2">
+    <div class="block">
+      <h3>Regras-chave</h3>
+      <ul style="font-size:.93rem">
+        <li>Direitos morais: personalidade, inalienáveis e irrenunciáveis (arts. 24 a 27). Patrimoniais: utilização depende de autorização prévia e expressa (art. 29), e cada modalidade é independente (art. 31).</li>
+        <li>Paráfrases e paródias são livres se não forem reprodução nem desacreditarem a obra (art. 47); não exigem indicar o autor (Info 725), mesmo eleitorais (Info 661, Tiririca).</li>
+        <li>Obras em logradouros públicos podem ser representadas livremente (art. 48): grafite ao fundo de anúncio do TikTok (Info 852).</li>
+        <li>Cessão sempre escrita, presume-se onerosa (art. 50). Sem contrato escrito, prazo máximo de 5 anos; só para modalidades existentes na data (art. 49), regra que não retroage a contratos anteriores a 1998 (streaming, Extra 23).</li>
+        <li>Programa de computador: direito autoral (Lei 9.609/98); crime do art. 12 em regra de ação privada.</li>
+        <li>Plágio: prescrição de 3 anos (CC, art. 206, §3º, V), contada da ciência (Info 609).</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>ECAD e execução pública</h3>
+      <ul style="font-size:.93rem">
+        <li>Devido por quartos de hotel e motel, mesmo com TV por assinatura (Tema 1066), ônibus (Info 688), casamento em clube (Info 526), eventos públicos gratuitos de prefeitura (Info 795), streaming (Extra 17).</li>
+        <li>Indevido em festa junina escolar pedagógica sem ingressos (Info 587).</li>
+        <li>Lei estadual que isenta eventos sem fins lucrativos é inconstitucional (STF, Info 1071).</li>
+        <li>Responsabilidade solidária do ente público que idealiza o evento terceirizado (Extra 15) e do dono do espaço locado, sem multa moratória de 10% do regulamento do ECAD (Info 879).</li>
+        <li>Súmula 63: devidos direitos pela retransmissão radiofônica em estabelecimento comercial. Súmula 228: não cabe interdito proibitório para direito autoral.</li>
+        <li>Letras de Tim Maia em camisetas violam direito autoral (Info 825); "Do Leme ao Pontal" como nome de bar não viola (Info 827).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TRATADOS -->
+<section id="tratados">
+  <div class="head"><div class="eyebrow">09 · Internacional</div><h2>Tratados</h2></div>
+  <div class="grid3">
+    <div class="block"><h3>CUP · Paris (1883)</h3><p style="font-size:.93rem">Revisão de Estocolmo promulgada pelo Decreto 635/1992. Prioridade de <b>12 meses</b> (patente e MU) e <b>6 meses</b> (desenho e marca). Pode-se depositar MU com prioridade de patente e vice-versa. Desenho depositado com prioridade de MU: vale o prazo de prioridade do <b>desenho</b>. Formalidades da prioridade podem ter como sanção, no máximo, a perda da prioridade. Art. 6º bis: marca notória.</p></div>
+    <div class="block"><h3>TRIPS (1994)</h3><p style="font-size:.93rem">Decreto 1.355/1994. A Parte II tem <b>8 seções</b>: 1. direito do autor e conexos; 2. marcas; 3. indicações geográficas; 4. desenhos industriais; 5. patentes; 6. topografias de circuitos integrados; 7. informação confidencial; 8. controle de práticas de concorrência desleal em contratos de licenças.</p><p style="font-size:.93rem">O <b>art. 1.2</b> define propriedade intelectual apenas pelas <b>Seções 1 a 7</b>. A Seção 8 está no acordo, mas não é categoria de PI. Padrões mínimos; incorpora a CUP. Origem do sistema mailbox.</p></div>
+    <div class="block"><h3>Protocolo de Madri</h3><p style="font-size:.93rem">Promulgado pelo <b>Decreto 10.033/2019</b>; em vigor no Brasil desde <b>2/10/2019</b>. Registro internacional de marcas.</p><ul style="font-size:.92rem"><li><b>Art. 3bis</b>: a extensão depende de pedido do depositante ou titular e <b>não</b> pode ser feita para a Parte cuja Administração é a de origem.</li><li><b>Art. 3ter, 1</b>: o pedido de extensão deve ter <b>menção especial</b> no pedido internacional.</li><li><b>Art. 3ter, 2</b>: extensão <b>posterior</b> é possível, <b>sem limite de 2 anos</b>; vale da anotação no Cadastro Internacional até a expiração da inscrição internacional.</li></ul></div>
+  </div>
+</section>
+
+<!-- PRAZOS -->
+<section id="prazos">
+  <div class="head"><div class="eyebrow">10 · Tabela única</div><h2>Todos os prazos</h2>
+  <p class="sub">Filtre por instituto. No modo treino os prazos ficam borrados: toque em cada célula para revelar.</p></div>
+  <div class="controls" id="pzFilters">
+    <button class="chip" aria-pressed="true" data-f="all">Todos</button>
+    <button class="chip" aria-pressed="false" data-f="pat">Patente</button>
+    <button class="chip" aria-pressed="false" data-f="des">Desenho</button>
+    <button class="chip" aria-pressed="false" data-f="mar">Marca</button>
+    <button class="chip" aria-pressed="false" data-f="geral">Geral</button>
+    <label class="toggle"><input type="checkbox" id="pzTrain"> Modo treino</label>
+    <span class="count" id="pzCount"></span>
+  </div>
+  <div class="tbl" id="pzWrap"><table>
+    <thead><tr><th>Instituto</th><th>Evento</th><th>Prazo</th><th>Contagem e detalhes</th><th>Base</th></tr></thead>
+    <tbody id="pzBody"></tbody></table></div>
+</section>
+
+<!-- JURISPRUDÊNCIA -->
+<section id="juris">
+  <div class="head"><div class="eyebrow">11 · STJ e STF</div><h2>Jurisprudência</h2>
+  <p class="sub">Todos os julgados que você enviou, reescritos em teses curtas. Busque por palavra (ex.: "Red Bull", "INPI", "prescrição").</p></div>
+  <div class="controls" id="jFilters">
+    <button class="chip" aria-pressed="true" data-f="all">Todos</button>
+    <button class="chip" aria-pressed="false" data-f="pat">Patente</button>
+    <button class="chip" aria-pressed="false" data-f="des">Desenho</button>
+    <button class="chip" aria-pressed="false" data-f="mar">Marca</button>
+    <button class="chip" aria-pressed="false" data-f="ig">Desleal e trade dress</button>
+    <button class="chip" aria-pressed="false" data-f="proc">Processo</button>
+    <input type="search" id="jSearch" placeholder="Buscar nos julgados" aria-label="Buscar nos julgados">
+    <span class="count" id="jCount"></span>
+  </div>
+  <div class="jlist" id="jList"></div>
+</section>
+
+<!-- QUESTÕES -->
+<section id="questoes">
+  <div class="head"><div class="eyebrow">12 · 36 questões</div><h2>Questões FGV comentadas</h2>
+  <p class="sub">Marque a alternativa para ver o gabarito e o comentário. Enunciados longos foram resumidos; as alternativas mantêm o ponto cobrado.</p></div>
+  <div class="controls" id="qFilters">
+    <button class="chip" aria-pressed="true" data-f="all">Todas</button>
+    <button class="chip" aria-pressed="false" data-f="pat">Patente</button>
+    <button class="chip" aria-pressed="false" data-f="des">Desenho</button>
+    <button class="chip" aria-pressed="false" data-f="mar">Marca</button>
+    <button class="chip" aria-pressed="false" data-f="ig">IG e desleal</button>
+    <button class="chip" aria-pressed="false" data-f="proc">Processo</button>
+    <button class="chip" aria-pressed="false" data-f="crime">Crimes</button>
+    <button class="chip" aria-pressed="false" data-f="trat">Tratados</button>
+    <span class="score" id="qScore">0 de 0 respondidas</span>
+    <button class="reset" id="qReset">Zerar respostas</button>
+  </div>
+  <div class="qlist" id="qList"></div>
+</section>
+
+<!-- PEGADINHAS -->
+<section id="pegadinhas">
+  <div class="head"><div class="eyebrow">13 · Revisão de véspera</div><h2>Pegadinhas da FGV</h2>
+  <p class="sub">Trocas de palavra que já derrubaram candidatos nas questões acima.</p></div>
+  <ol class="pg">
+    <li>Marca conta da <b>concessão</b>; patente e desenho contam do <b>depósito</b>.</li>
+    <li>Nulidade administrativa: patente <b>6 meses</b> da concessão; desenho <b>5 anos</b> da concessão; marca <b>180 dias</b> da expedição do certificado. Defesa sempre em <b>60 dias</b>.</li>
+    <li>Ação de nulidade: patente e desenho <b>a qualquer tempo da vigência</b>; marca prescreve em <b>5 anos da concessão</b>. Resposta do réu sempre <b>60 dias</b>.</li>
+    <li>Nulidade como defesa na Justiça Estadual: só <b>patente e desenho</b>, efeitos inter partes. Para marca, nunca.</li>
+    <li>INPI na nulidade de marca é <b>assistente especial</b> (intervenção sui generis obrigatória), não amicus curiae nem litisconsorte necessário clássico.</li>
+    <li>Não se exige esgotar a via administrativa para a ação de nulidade.</li>
+    <li>Letra, algarismo e data isolados: proibidos <b>salvo</b> forma distintiva. Cores: <b>salvo</b> combinação peculiar.</li>
+    <li>Sinal de propaganda não é registrável como marca nem tem registro próprio no INPI; proteção é pela concorrência desleal (art. 195, IV).</li>
+    <li>Alto renome: todos os ramos, exige registro no Brasil, exceção à especialidade. Notória: seu ramo, independe de registro, exceção à territorialidade, INPI indefere <b>de ofício</b>.</li>
+    <li>Ação penal: <b>queixa</b>, salvo art. 191 (pública). Apreensão alfandegária de ofício ou a requerimento.</li>
+    <li>O prejudicado propõe ações cíveis <b>independentemente</b> da ação criminal, não "após a queixa".</li>
+    <li>Perdas e danos também por atos <b>não previstos</b> na LPI (art. 209).</li>
+    <li>Licença compulsória por não exploração: só após <b>3 anos</b> da concessão. Dependência de patentes: requisitos <b>cumulativos</b>. Sempre sem exclusividade e sem sublicença.</li>
+    <li>MU: <b>um único modelo principal</b>, com variantes. Desenho: até <b>20 variações</b>. Invenção: único conceito inventivo.</li>
+    <li>Prioridade interna: <b>1 ano</b>, pedido anterior fica arquivado, matéria nova não tem prioridade, pedido dividido não serve de base.</li>
+    <li>Concessão da patente: pagamento em <b>60 dias</b> do deferimento (+30); reputa-se concedida na <b>publicação</b>.</li>
+    <li>Exame da patente: <b>36 meses</b>. Exigência: <b>90 dias</b>. Sigilo: <b>18 meses</b>. Graça: <b>12 meses</b> (desenho: 180 dias).</li>
+    <li>Restauração de patente: <b>3 meses da notificação</b>, não 6 meses da extinção.</li>
+    <li>Precedência: uso de boa-fé há <b>6 meses</b>; a falta de oposição administrativa não a extingue.</li>
+    <li>Indicação de procedência = fama do lugar. Denominação de origem = qualidade devida ao meio. Requisito de qualidade só na DO.</li>
+    <li>Trade dress entre particulares = Justiça Estadual e exige perícia. Cumulado com nulidade de marca = Justiça Federal.</li>
+    <li>Direito de zelar pela marca e licenciá-la pertence ao <b>titular e ao depositante</b>.</li>
+    <li>Programas de computador em si e métodos cirúrgicos e terapêuticos <b>não</b> são invenção (art. 10).</li>
+    <li>TRIPS: o conceito de PI do art. 1.2 vai só até a <b>Seção 7</b>; o controle de práticas desleais em licenças (Seção 8) não entra. Madri: sem extensão ao escritório de origem e sem limite de 2 anos para extensão posterior.</li>
+  </ol>
+</section>
+
+<footer>Fontes: Lei 9.279/1996, material teórico, Informativos STJ/STF e questões FGV (qconcursos) enviados por você. Itens marcados para conferência devem ser checados na redação vigente antes de uso em peça real.</footer>
+</main>
+
+<script>
+/* ---------- PRAZOS ---------- */
+const PZ=[
+ ["pat","Vigência da patente de invenção","20 anos","do depósito; não prorroga; sem prazo mínimo desde a concessão (ADI 5529)","art. 40"],
+ ["pat","Vigência do modelo de utilidade","15 anos","do depósito; não prorroga","art. 40"],
+ ["pat","Período de graça (divulgação não destrói novidade)","12 meses","antes do depósito ou prioridade; pelo inventor, pelo INPI sem consentimento ou por terceiro com dados do inventor","art. 12"],
+ ["pat","Exigências do pedido incompleto","30 dias","sob pena de devolução ou arquivamento","art. 21"],
+ ["pat","Sigilo do pedido","18 meses","do depósito ou da prioridade mais antiga; publicação antecipada a pedido","art. 30"],
+ ["pat","Requerer o exame","36 meses","do depósito, pelo depositante ou qualquer interessado, sob pena de arquivamento","art. 33"],
+ ["pat","Resposta a exigência ou parecer negativo","90 dias","da intimação","art. 36"],
+ ["pat","Pagamento para expedir a carta-patente","60 dias + 30","do deferimento; +30 dias com retribuição específica; concedida na publicação","art. 38"],
+ ["pat","Retribuição anual","a partir do 3º ano","do depósito; paga nos 3 primeiros meses de cada ano, ou nos 6 meses seguintes com adicional","art. 84"],
+ ["pat","Restauração de patente ou pedido","3 meses","da notificação do arquivamento ou extinção; notificação prévia obrigatória","art. 87"],
+ ["pat","Prioridade interna","1 ano","pedido posterior, mesma matéria, mesmo requerente; anterior fica arquivado","art. 17"],
+ ["pat","Divisão do pedido","até o fim do exame","de ofício ou a requerimento","art. 26"],
+ ["pat","Nulidade administrativa","6 meses","da concessão; prossegue mesmo extinta a patente","art. 51"],
+ ["pat","Manifestação do titular na nulidade administrativa","60 dias","da intimação","art. 52"],
+ ["pat","Ação de nulidade","qualquer tempo","durante a vigência; Justiça Federal","art. 56"],
+ ["pat","Resposta do réu na ação de nulidade","60 dias","","art. 57, §1º"],
+ ["pat","Licença compulsória por não exploração ou mercado","após 3 anos","da concessão da patente","art. 68, §5º"],
+ ["pat","Licenciado compulsório iniciar exploração","1 ano","da concessão da licença; admitida interrupção por igual prazo","art. 74"],
+ ["pat","Lista de patentes em emergência","30 dias","da declaração; avaliação em 30 dias prorrogáveis; remuneração provisória de 1,5%","art. 71"],
+ ["pat","Caducidade","2 anos","da 1ª licença compulsória sem sanar abuso ou desuso; manifestação em 60 dias; decisão em 60 dias","arts. 80 a 82"],
+ ["pat","Presunção de invenção na vigência do contrato","1 ano","após a extinção do vínculo, se o empregado requerer a patente nesse período","art. 88, §2º"],
+ ["pat","Empregador explorar invenção comum","1 ano","da concessão, sob pena de a titularidade passar ao empregado","art. 91, §3º"],
+ ["pat","Usuário anterior x divulgação","1 ano","o direito não vale para quem soube pela divulgação do art. 12 se o depósito ocorreu em 1 ano","art. 45, §2º"],
+ ["des","Vigência do desenho industrial","10 anos + 3×5","do depósito; máximo de 25 anos","art. 108"],
+ ["des","Pedido de prorrogação","último ano + 180 dias","no último ano de vigência; depois, 180 dias com retribuição adicional","art. 108, §§1º e 2º"],
+ ["des","Período de graça","180 dias","antes do depósito ou prioridade","art. 96, §3º"],
+ ["des","Exigências do pedido incompleto","5 dias","sob pena de ser considerado inexistente","art. 103"],
+ ["des","Variações no mesmo pedido","até 20","mesma finalidade e característica distintiva preponderante","art. 104"],
+ ["des","Sigilo a pedido","180 dias","do depósito; pode retirar o pedido nesse período","art. 106, §1º"],
+ ["des","Retribuição quinquenal","5º ano","a partir do 2º quinquênio, contado do depósito; +6 meses com adicional","art. 120"],
+ ["des","Exame de mérito","qualquer tempo","da vigência, a requerimento do titular","art. 111"],
+ ["des","Nulidade administrativa","5 anos","da concessão; manifestação do titular em 60 dias","arts. 113 e 114"],
+ ["des","Ação de nulidade","qualquer tempo","da vigência; resposta em 60 dias (aplica arts. 56 e 57)","art. 118"],
+ ["mar","Vigência da marca","10 anos","da concessão; prorrogável por períodos iguais e sucessivos, sem limite","art. 133"],
+ ["mar","Pedido de prorrogação","último ano + 6 meses","no último ano; depois, 6 meses com retribuição adicional","art. 133, §§1º e 2º"],
+ ["mar","Exigências do pedido incompleto","5 dias","","art. 157"],
+ ["mar","Oposição ao pedido","60 dias","da publicação do pedido","art. 158"],
+ ["mar","Pagamento para expedir o certificado","60 dias + 30","do deferimento; +30 com retribuição específica; concedido na publicação","arts. 162 e 163"],
+ ["mar","Direito de precedência","6 meses de uso","uso de boa-fé no País antes do depósito ou prioridade","art. 129, §1º"],
+ ["mar","Nulidade administrativa","180 dias","da expedição do certificado","art. 169"],
+ ["mar","Manifestação do titular na nulidade administrativa","60 dias","decide o Presidente do INPI","art. 170"],
+ ["mar","Ação de nulidade","5 anos","prescrição contada da concessão; imprescritível com marca notória + má-fé (CUP 6 bis)","art. 174"],
+ ["mar","Resposta do réu na ação de nulidade","60 dias","","art. 175, §1º"],
+ ["mar","Caducidade","5 anos","da concessão sem uso, ou interrupção por 5 anos consecutivos; manifestação em 60 dias","art. 143"],
+ ["mar","Novo pedido de caducidade","5 anos","não se conhece se o uso foi provado em processo requerido há menos de 5 anos","art. 145"],
+ ["geral","Prioridade unionista para patente e MU","12 meses","do primeiro depósito no país da União","CUP, art. 4º C"],
+ ["geral","Prioridade unionista para desenho e marca","6 meses","do primeiro depósito","CUP, art. 4º C"],
+ ["geral","Reparação de dano à propriedade industrial","5 anos","renova-se enquanto durar o uso indevido","art. 225; Súm. 143"],
+ ["geral","Pipeline · vigência","prazo remanescente","no país do 1º depósito, até 20 anos do 1º depósito no exterior","art. 230, §4º"],
+ ["geral","Multa penal","10 a 360 dias-multa","aumento ou redução em até 10 vezes","art. 197"],
+ ["geral","Plágio · direito autoral","3 anos","da ciência da lesão (CC, art. 206, §3º, V)","Info 609"]
+];
+const COL={pat:"var(--pat)",des:"var(--des)",mar:"var(--mar)",geral:"var(--muted)",ig:"var(--ig)",proc:"var(--accent)",crime:"var(--crime)",trat:"var(--muted)"};
+const NAME={pat:"Patente",des:"Desenho",mar:"Marca",geral:"Geral",ig:"Desleal",proc:"Processo",crime:"Crimes",trat:"Tratados"};
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+let pzF="all";
+function renderPZ(){
+  const rows=PZ.filter(r=>pzF==="all"||r[0]===pzF);
+  document.getElementById("pzBody").innerHTML=rows.map(r=>`<tr><td><span class="dot" style="--c:${COL[r[0]]}"></span>${NAME[r[0]]}</td><td>${esc(r[1])}</td><td class="pz"><span>${esc(r[2])}</span></td><td>${esc(r[3])}</td><td><span class="art">${esc(r[4])}</span></td></tr>`).join("");
+  document.getElementById("pzCount").textContent=rows.length+" prazos";
+}
+document.getElementById("pzFilters").addEventListener("click",e=>{
+  const b=e.target.closest(".chip");if(!b)return;pzF=b.dataset.f;
+  document.querySelectorAll("#pzFilters .chip").forEach(c=>c.setAttribute("aria-pressed",c===b));renderPZ();});
+document.getElementById("pzTrain").addEventListener("change",e=>{document.getElementById("pzWrap").classList.toggle("hide-pz",e.target.checked);
+  document.querySelectorAll("td.pz.shown").forEach(t=>t.classList.remove("shown"));});
+document.getElementById("pzBody").addEventListener("click",e=>{const td=e.target.closest("td.pz");if(td)td.classList.toggle("shown");});
+renderPZ();
+
+/* ---------- JURISPRUDÊNCIA ---------- */
+const J=[
+ ["mar","Info 892 · 4ª T · 2026","Caducidade pendente não suspende o ônus de prorrogar","Mesmo com processo de caducidade em curso e recurso com efeito suspensivo, o titular deve pedir a prorrogação no prazo; se não pedir, o registro se extingue.","Marca PROFILE (IM&T x Michelin)."],
+ ["pat","Info 876 · STJ · 2026","Ozempic: sem extensão judicial por mora do INPI","Após a ADI 5529, patente farmacêutica vale 20 anos do depósito, ainda que o INPI demore; o Judiciário não estende caso a caso sem lei.","Novo Nordisk: depósito 2004, concessão 2020."],
+ ["ig","Info 849 · 3ª T · 2025","Desvio de clientela por ex-empregado","Concorrência desleal pelo empregado só durante o contrato; depois, apenas se houver cláusula de não concorrência. Lucros cessantes limitados ao fim do vínculo.",""],
+ ["mar","Info 827 · 3ª T · 2024","Expressão de propaganda dentro da marca","Art. 124, VII só veda sinal usado apenas como propaganda. Marca com outros elementos distintivos é registrável, sem exclusividade sobre a frase isolada (apostilamento).","THERASKIN Harmonia na pele."],
+ ["des","Info 820 · 4ª T · 2024","Desenho não registrado cai no estado da técnica","Divulgada a novidade estética sem registro, terceiros podem usá-la sem autorização: sistema atributivo.","Bonecas montadas com partes de bonecas da concorrente."],
+ ["mar","Info 817 · 4ª T · 2024","Imprescritibilidade da nulidade de marca","Exige notoriedade da marca e má-fé do registrante (CUP, art. 6º bis, 3), admitida prova em contrário.","Speedo."],
+ ["proc","Info 818 · 2ª Seção · 2024","Nulidade de desenho como defesa na JE","Patente e desenho podem ter nulidade arguida como defesa na ação de infração na Justiça Estadual, sem INPI; efeitos inter partes, só para julgar improcedente.",""],
+ ["ig","Extra 20 · 3ª T · 2024","Links patrocinados com marca do concorrente","Meio fraudulento de desvio de clientela; dispensa prova de prejuízo. Requisitos: palavra-chave = marca/nome; mesmo ramo; aptidão para violar funções identificadora e de investimento.",""],
+ ["proc","Info 789 · 3ª T · 2023","Lucros cessantes do art. 210 sem arbitrariedade","O critério mais favorável não permite método arbitrário; faltando perícia técnica na área da patente, os autos voltam para instrução.",""],
+ ["mar","Info 784 · 3ª T · 2023","Vogue x Vogue Square","Nome de empreendimento imobiliário não goza nem sofre exclusividade marcária sem confusão; diluição é tema de marcas famosas fora da especialidade.",""],
+ ["mar","Info 769 · 4ª T · 2023","Extra x Extrabom","Marca descritiva ou evocativa pode ter de conviver com semelhantes; o acréscimo de 'bom' e logotipo próprio afastam confusão.",""],
+ ["ig","Extra 12 · 4ª T · 2023","Trade dress como ilícito continuado","A prescrição atinge só o período anterior ao marco, tanto para reparação quanto para tutela inibitória.",""],
+ ["ig","Info 781 · 4ª T · 2023","Propaganda comparativa ofensiva","Dano moral in re ipsa; dano material só com prova do prejuízo.",""],
+ ["proc","Info Especial 9 · 2ª Seção · 2022","Sem coisa julgada entre JE e JF","Ação cominatória e indenizatória na JE e ação de nulidade na JF contra a mesma ré têm elementos distintos.",""],
+ ["mar","Info 756 · 4ª T · 2022","Uso de 'paraolímpico' sem fins comerciais","Associação de inclusão de pessoas com deficiência pode usar o termo no desporto educacional ou de participação.",""],
+ ["mar","Info 753 · 4ª T · 2022","Rose & Bleu","Cores e vocábulos genéricos ligados ao segmento não são registráveis, salvo combinação peculiar (art. 124, VI e VIII).",""],
+ ["mar","Info 752 · 3ª T · 2022","Neutrox x Tratex","Semelhança e afinidade não bastam; é preciso aptidão para confundir o consumidor ou prejudicar o titular.",""],
+ ["des","Info 750 · 4ª T · 2022","Formato gráfico de buscas","Sem proteção de desenho industrial e sem proteção autoral, mesmo registrado em cartório; ideias são livres.",""],
+ ["ig","Info 747 · 4ª T · 2022","Braun Turismo","Comprar a marca do concorrente como palavra-chave no Google configura concorrência desleal.",""],
+ ["pat","Info 734 · Tema 1065 · 2022","Patentes mailbox","Não se aplicava a elas o prazo mínimo do antigo parágrafo único do art. 40; vigência até 20 anos do depósito.",""],
+ ["ig","Info 715 · 3ª T · 2021","Requisitos do trade dress","Ausência de caráter funcional, distintividade, confusão ou associação, anterioridade de uso. Estampas e bordados podem ter proteção autoral.",""],
+ ["proc","Infos 519 e 716","Nulidade não cumula com indenização","Ação de nulidade de marca (JF) não pode cumular pedido indenizatório contra o particular.",""],
+ ["mar","Infos 654 e 712","Albert Einstein","Autorização de nome civil vale para registro, classe e item específicos; cada nova marca exige nova autorização.",""],
+ ["mar","Info 709 · 3ª T · 2021","Perdigão","Marca famosa sem declaração de alto renome não impede registro em ramo distinto; declaração tem efeito prospectivo; diluição só protege alto renome.",""],
+ ["pat","Info 703 · 4ª T · 2021","Anuência prévia da ANVISA","Enquanto vigeu o art. 229-C (revogado em 2021), a ANVISA podia examinar qualquer aspecto ligado à saúde pública.",""],
+ ["mar","Info 702 · 4ª T · 2021","Símbolo partidário","Pode ser registrado como marca; convivência das proteções eleitoral e marcária.",""],
+ ["proc","Info 698 · 3ª T · 2021","Royalties de cultivares","Prescrição de 5 anos (CC, art. 206, §5º, I).",""],
+ ["pat","Info 1017 · STF · ADI 5529","Parágrafo único do art. 40 inconstitucional","Prazo mínimo de 10 anos (invenção) e 7 anos (MU) desde a concessão viola temporalidade, função social, saúde e livre concorrência.",""],
+ ["mar","Info 693 · 4ª T · 2021","Fogo Olímpico","Nulo o registro: símbolos olímpicos pertencem ao COB e CPB sem registro (Lei Pelé), proteção em todos os ramos, combate ao marketing de emboscada.",""],
+ ["mar","Info 692 · 3ª T · 2021","Red Bull x Power Bull","Associação indevida (art. 124, XIX) mesmo sem confusão entre os conjuntos; risco de diluição; marcas com 'bull' no exterior não importam.",""],
+ ["proc","Info 686 · 4ª T · 2021","INPI como assistente especial","Na nulidade de marca, quando não é autor, o INPI intervém obrigatoriamente de forma sui generis, defendendo o interesse público.",""],
+ ["proc","Info 682 · 3ª T · 2020","Nulidade de patente como defesa na JE","Arts. 56, §1º, e 118: cabe para patente e desenho, não para marca; sem coisa julgada, sem efeito externo.",""],
+ ["pat","Info 679 · 3ª T · 2020","Restauração de patente","Ilegal a resolução do INPI que vedava restauração a quem devesse mais de uma anuidade.",""],
+ ["mar","Info 666 · 3ª T · 2020","Joca Cola","Renúncia ao registro não extingue a ação de nulidade.",""],
+ ["proc","Info 667 · 4ª T · 2020","Poliedro","A Justiça Estadual não pode negar a abstenção de uso sob o argumento de que o registro da marca é nulo.",""],
+ ["proc","Info 666 · 3ª T · 2020","Solidariedade do comerciante","Quem comercializa responde solidariamente com o fabricante do produto contrafeito.",""],
+ ["pat","Info 658 · IAC 4 · 2019","Soja transgênica","Privilégios do agricultor da Lei de Cultivares não se opõem ao titular da patente de transgenia.",""],
+ ["mar","Info 657 · 3ª T · 2019","Natura Recreio","Marca de alto renome não impede o nome de edifício; ato da vida civil.",""],
+ ["mar","Info 648 · 3ª T · 2019","Prescrição da nulidade de marca","Os 5 anos do art. 174 não se afastam pela teoria dualista das nulidades.",""],
+ ["mar","Info 646 · 3ª T · 2019","America Air x American Airlines","Distintividade adquirida não gera exclusividade automática; marcas evocativas convivem.",""],
+ ["proc","Info 644 · 3ª T · 2019","Legitimidade recursal do INPI","Pode recorrer da extinção de reconvenção que pedia nulidade de marca.",""],
+ ["ig","Infos 612 e 641","Perícia no trade dress","A prova pericial é indispensável; indeferi-la é cerceamento de defesa.",""],
+ ["proc","Info 618 · Tema 950","Trade dress na JE; abstenção com nulidade na JF","Concorrência desleal entre particulares é estadual; a abstenção cumulada com nulidade de marca é federal, inclusive em tutela provisória.",""],
+ ["proc","Info 619 · 4ª T · 2017","Danos por uso indevido de marca","Dano material reconhecido pela violação, valor em liquidação; dano moral in re ipsa.",""],
+ ["pat","Info 608 · 3ª T · 2017","Notificação prévia","Arquivamento ou extinção por falta de retribuição anual exige notificação prévia.",""],
+ ["proc","Info 599 · 2ª T · 2017","Contratos de transferência de tecnologia","O INPI pode exigir alteração de cláusulas abusivas ou ilegais ao averbar.",""],
+ ["proc","Info 593 · 3ª T · 2016","Termo inicial da abstenção","A pretensão nasce com a violação; se havia autorização até certa data, conta do desrespeito a esse termo.",""],
+ ["des","Info 578 · 3ª T · 2016","Retribuição quinquenal","Conta-se do depósito, não do certificado.",""],
+ ["proc","Info 576 · 3ª T · 2016","INPI e sucumbência","Responde por honorários quando deu causa; isento de custas; reembolsa despesas do autor.",""],
+ ["mar","Info 563 · 4ª T · 2015","Caducidade e uso efetivo","Produzir no Brasil para exportar é uso; vendas inexpressivas para o porte da empresa permitem caducidade.",""],
+ ["pat","Info 550 · 3ª T · 2014","Pipeline","Não se exigem os requisitos do art. 8º e a patente não pode ser anulada por falta deles.",""],
+ ["ig","Info 550 · 4ª T · 2014","Propaganda comparativa lícita","Esclarecimento do consumidor, informação verdadeira e objetiva, sem depreciação e sem confusão.",""],
+ ["mar","Info 548 · 3ª T · 2014","Crescer","Atividades distintas na mesma classe de serviços (educação): há violação.",""],
+ ["mar","Info 548 · 4ª T · 2014","Multimed","Nome empresarial com proteção estadual não impede registro da marca no INPI.",""],
+ ["mar","Info 538 · 3ª T · 2014","Licença e padronização","O titular pode impedir o licenciado que não segue a nova padronização.",""],
+ ["mar","Info 526 · 3ª T · 2013","Marcas fracas","Expressões de uso comum mitigam a exclusividade; terceiros de boa-fé podem usar.",""],
+ ["proc","Info 524 · 4ª T · 2013","Prescrição renovada","Os 5 anos do art. 225 contam da violação e se renovam enquanto houver uso indevido.",""],
+ ["mar","Info 517 · 3ª T · 2013","Alto renome pela via direta","O titular pode pedir declaração geral de alto renome; o Judiciário só manda o INPI decidir em prazo razoável, sem decidir o mérito.",""],
+ ["mar","Info 514 · 3ª T · 2012","Importação paralela","Proibida sem consentimento; recusa repentina após tolerância gera lucros cessantes ao antigo importador.",""],
+ ["proc","REsp 1.132.449 · 3ª T · 2012","Proteção do registro na JE","Para a JE negar a proteção do registro de marca ou desenho, a invalidade deve antes ser reconhecida na JF com o INPI (para patente e desenho, ver Infos 682 e 818).",""]
+];
+let jF="all",jQ="";
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");}
+function renderJ(){
+  const q=norm(jQ);
+  const rows=J.filter(r=>(jF==="all"||r[0]===jF)&&(!q||norm(r.join(" ")).includes(q)));
+  document.getElementById("jList").innerHTML=rows.map(r=>`<article class="j"><div class="meta"><span class="tag" style="color:${COL[r[0]]}">${NAME[r[0]]}</span><span class="info">${esc(r[1])}</span></div><h4>${esc(r[2])}</h4><p>${esc(r[3])}</p>${r[4]?`<p class="caso">Caso: ${esc(r[4])}</p>`:""}</article>`).join("")||`<p class="muted">Nenhum julgado com esse termo.</p>`;
+  document.getElementById("jCount").textContent=rows.length+" julgados";
+}
+document.getElementById("jFilters").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;jF=b.dataset.f;
+  document.querySelectorAll("#jFilters .chip").forEach(c=>c.setAttribute("aria-pressed",c===b));renderJ();});
+document.getElementById("jSearch").addEventListener("input",e=>{jQ=e.target.value;renderJ();});
+renderJ();
+
+/* ---------- QUESTÕES ---------- */
+const Q=[
+{t:"pat",o:"TJ-BA · Juiz · 2026",e:"A Companhia Valença de Andaraí S/A requereu patente de modelo de utilidade no INPI. É INCORRETO afirmar que:",a:["o pedido será submetido a exame formal preliminar e, se instruído, protocolizado, com data de depósito a da apresentação;","o exame deverá ser requerido pelo depositante ou qualquer interessado em 36 meses do depósito, sob pena de arquivamento;","o pedido de MU poderá, a critério do requerente, se referir a um ou mais modelos, com pluralidade de elementos distintos, adicionais ou variantes de cada um;","parecer pela não patenteabilidade, não enquadramento ou exigência: o depositante será intimado a se manifestar em 90 dias;","o pedido poderá ser dividido, de ofício ou a requerimento, até o final do exame, sem exceder a matéria original."],g:"C",c:"O art. 23 exige um único modelo principal, que pode incluir elementos distintos, adicionais ou variantes, desde que mantida a unidade técnico-funcional e corporal. As demais reproduzem os arts. 20, 33, 36 e 26."},
+{t:"proc",o:"TRF2 · Juiz Federal · 2026",e:"Ação de nulidade de registro de marca na Justiça Federal contra o INPI e o titular. É correto afirmar que:",a:["é terminantemente proibido o registro de marca que reproduza isoladamente letra, algarismo e data;","é condição de procedibilidade o exaurimento prévio da via administrativa;","o processo administrativo de nulidade, autônomo, pode ser instaurado de ofício ou por interessado em 180 dias da expedição do certificado;","no processo administrativo o titular se manifesta em 30 dias; na ação, o réu responde em 60 dias;","se houver pedido de abstenção do trade dress do corréu, a competência é da Justiça Estadual, ainda que em tutela antecipada."],g:"C",c:"Art. 169. A: há a ressalva da forma distintiva (art. 124, II). B: não se exige via administrativa. D: o prazo administrativo também é de 60 dias (art. 170). E: cumulado com nulidade, é Justiça Federal (Tema 950)."},
+{t:"proc",o:"TRF2 · Juiz Federal · 2026",e:"Titular de patente e dois desenhos industriais propõe ação de infração na Justiça Estadual. A ré argui, como defesa, a nulidade dos três títulos. Segundo a LPI e a 2ª Seção do STJ:",a:["a arguição é inadmissível, pois exige o INPI e atrai a Justiça Federal;","só a nulidade da patente pode ser arguida como defesa; o desenho exige ação autônoma na JF;","a JE pode reconhecer incidentalmente a nulidade com efeitos erga omnes, dispensando ação autônoma;","a LPI autoriza a arguição de nulidade de patentes e desenhos como defesa, a qualquer tempo, na ação de infração na JE, servindo exclusivamente para a improcedência;","o juízo estadual deve oficiar o INPI como amicus curiae antes de apreciar."],g:"D",c:"Arts. 56, §1º, e 118; EREsp 1.332.417 (Info 818). Efeitos só inter partes, sem participação do INPI."},
+{t:"crime",o:"MPE-GO · Promotor · 2026",e:"José fabricou, sem autorização, produtos cobertos por patente de invenção. Analise: I. Na busca e apreensão em crime contra patente de processo, o oficial vai com perito, que verifica o ilícito, podendo o juiz ordenar a apreensão. II. Em estabelecimento legalmente organizado e funcionando publicamente, as diligências se limitam a vistoria e apreensão, sem paralisar a atividade lícita. III. Os crimes são de ação penal pública condicionada à representação.",a:["I, apenas.","II, apenas.","III, apenas.","I e II, apenas.","I, II e III."],g:"D",c:"I: art. 201. II: art. 203. III: errada, a regra é a queixa (art. 199), salvo o art. 191, de ação pública."},
+{t:"crime",o:"AMAZUL · Advogado · 2026",e:"Sobre a proteção da marca registrada e das patentes, assinale a correta.",a:["Consideram-se invenções programas de computador em si, métodos matemáticos e técnicas operatórias.","A invenção é considerada nova quando compreendida no estado da técnica.","Unicamente na reprodução de marca, o Ministério Público poderá determinar a apreensão das mercadorias.","Fica ressalvado ao CADE o direito de haver perdas e danos por atos de concorrência desleal não previstos na LPI.","Poderão ser apreendidos, de ofício ou a requerimento, pelas autoridades alfandegárias, no ato de conferência, produtos com marcas falsificadas ou falsa indicação de procedência."],g:"E",c:"Art. 198. A: art. 10. B: é não compreendida. C: não há tal poder do MP. D: o direito do art. 209 é do prejudicado, não do CADE."},
+{t:"mar",o:"TRF6 · Juiz Federal · 2025",e:"Careaçu Administradora de Títulos (custódia de títulos e consultoria financeira) teve indeferida a marca por existir Careaçu Auditoria Contábil (sociedade simples, serviços de contabilidade). I. Marca idêntica anterior impede o registro. II. A novidade da marca decorre do princípio da especialidade, e não da anterioridade, sendo possível o registro. III. A novidade decorre da anterioridade, mitigada pela territorialidade.",a:["I, apenas.","II, apenas.","III, apenas.","I e II, apenas.","II e III, apenas."],g:"B",c:"A novidade da marca é relativa: aferida pela especialidade. Ramos distintos permitem a convivência de marcas idênticas."},
+{t:"mar",o:"TRF1 · Juiz Federal · 2025",e:"Ação de nulidade por violação ao direito de precedência de sociedade que usava a marca há mais de 5 anos, mesma base territorial e atividade idêntica. O INPI alega que a falta de oposição administrativa inviabiliza a ação; a titular alega que só importa a anterioridade.",a:["Procede a defesa do INPI (prazo decadencial de 60 dias para oposição); rejeita-se a da titular pela especificidade.","Procedem ambas: renúncia tácita e sistema atributivo.","Não procede nenhuma: a falta de oposição não impede a ação de nulidade, e a colidência considera territorialidade e especificidade.","Procedem ambas, com prazo de 90 dias para oposição.","Não procede a do INPI; procede a da titular, pois a colidência se restringe à anterioridade."],g:"C",c:"A ação de nulidade é autônoma e tutela a precedência (art. 129, §1º). A colidência considera especialidade e territorialidade, não só a anterioridade. A oposição é de 60 dias, mas não é decadencial para a ação judicial."},
+{t:"pat",o:"TRF5 · Juiz Federal · 2025",e:"Discute-se o direito de prioridade a pedido posterior de patente de MU, sendo o anterior depositado originalmente no Brasil, sem reivindicação de prioridade e não publicado.",a:["É assegurada prioridade ao pedido posterior sobre a mesma matéria, depositado no Brasil pelo mesmo requerente ou sucessores, em 1 ano.","Não há prioridade para a matéria revelada no anterior, só para a matéria nova.","Pedido originário de divisão pode servir de base à prioridade.","Prioridade para pedido no Brasil ou em país unionista em 6 meses.","O pedido anterior pendente é conservado, salvo requerimento de arquivamento em 90 dias."],g:"A",c:"Art. 17. B inverte o §1º. C contraria o §3º. E: o anterior é considerado definitivamente arquivado (§2º)."},
+{t:"pat",o:"TJ-SE · Juiz · 2025",e:"A patente de invenção será concedida:",a:["depois de deferido, com carta-patente em 30 dias, independentemente da publicação;","na publicação do ato, com carta-patente em até 90 dias;","depois de deferido o pedido, do pagamento e da comprovação, atos a efetuar em 60 dias do deferimento, expedindo-se a carta-patente;","depois do pagamento em 30 dias da publicação, mais 15 dias com retribuição específica;","depois do deferimento e do pagamento em 120 dias."],g:"C",c:"Art. 38: 60 dias do deferimento, mais 30 dias com retribuição específica; reputa-se concedida na publicação do ato."},
+{t:"mar",o:"TRF3 · Juiz Federal · 2025",e:"Assinale a correta.",a:["A ação de nulidade de marca pode ser proposta pelo INPI ou qualquer interessado; cabe liminar de suspensão do registro e do uso; é ajuizada na JF, com intervenção do INPI quando não for autor; prescreve em 5 anos da concessão.","A proteção se dá por patentes, registros, repressão a falsas IGs, prevenção e repressão às infrações contra a ordem econômica e registro de jogos eletrônicos.","Consideram-se invenção ou MU métodos comerciais, programas de computador em si e métodos cirúrgicos.","Os atos do INPI só produzem efeitos a partir da publicação, inclusive as decisões notificadas por via postal ou ciência no processo.","(...) o INPI só pode indeferir pedido que imite marca notoriamente conhecida mediante iniciativa da parte interessada."],g:"A",c:"Arts. 173 a 175 e 174. B: infrações à ordem econômica não estão no art. 2º. C: art. 10. D: o art. 226 ressalva essas decisões. E: o INPI pode indeferir de ofício (art. 126, §2º)."},
+{t:"ig",o:"Pref. Cuiabá · Auditor · 2024",e:"Sobre sinais e expressões empregados apenas como meio de propaganda:",a:["são registráveis como marca se não forem contrários à moral;","comete crime de concorrência desleal quem usa expressão ou sinal de propaganda alheio, ou o imita, criando confusão, podendo o prejudicado propor ações cíveis independentemente da ação criminal;","qualquer pessoa com atividade lícita pode requerer seu registro no INPI;","o registro no INPI é atributivo e vale em todo o território;","o registro vigora por 10 anos, prorrogáveis."],g:"B",c:"Arts. 195, IV, e 207. Não são registráveis como marca (art. 124, VII), e a LPI não prevê registro autônomo de sinal de propaganda."},
+{t:"des",o:"TJ-PE · Juiz · 2024",e:"Vicência Móveis pediu o registro, como desenho industrial, da forma ornamental de uma cadeira. É correto:",a:["apresentado o pedido, será submetido a exame formal preliminar e, se instruído, protocolizado, com data de depósito a da apresentação;","terá de se referir a um único objeto, vedada qualquer pluralidade de variações;","pedido sigiloso pode ser retirado em até 120 dias do depósito;","pode ser aceito sem comprovante de pagamento, a recolher em 30 dias;","o INPI não pode receber pedido sem toda a documentação, ainda que com dados suficientes."],g:"A",c:"Art. 102. B: até 20 variações (art. 104). C: 180 dias (art. 106). E: art. 103 admite o pedido com exigências em 5 dias."},
+{t:"ig",o:"TJ-MT · Juiz · 2024",e:"Sobre aspectos civis da concorrência desleal:",a:["o prejudicado, após a queixa-crime, pode propor ações cíveis;","só há perdas e danos por atos previstos na LPI;","o juiz pode, em ação incidental, após a citação, sustar a violação mediante caução;","os lucros cessantes serão pelo fluxo de caixa projetado do prejudicado;","a indenização será determinada pelos benefícios que o prejudicado teria auferido se a violação não tivesse ocorrido."],g:"E",c:"Art. 208. A: independentemente da ação criminal (art. 207). B: inclusive atos não previstos (art. 209). C: liminarmente, nos autos da própria ação, antes da citação (art. 209, §1º). D: art. 210 tem três critérios, o mais favorável."},
+{t:"pat",o:"TJ-SC · Juiz · 2024",e:"No 6º ano de vigência de patente de invenção, o INPI propõe ação de nulidade na Justiça Federal, com pedido de suspensão preventiva.",a:["na ação de nulidade de patente, o prazo de resposta do réu é de 60 dias;","deve ser na JF e o INPI sempre será o autor;","a suspensão não pode ser preventiva, só incidental após 15 dias;","a ação só cabe até o 5º ano de vigência, havendo prescrição;","a ação é tempestiva porque observa metade do prazo de vigência."],g:"A",c:"Art. 57, §1º. B: qualquer interessado pode propor. C: preventiva ou incidental (art. 56, §2º). D e E: cabe a qualquer tempo da vigência (art. 56)."},
+{t:"mar",o:"Pref. Vitória · Procurador · 2024",e:"Café Aroma Capixaba (café em grãos) x cafeteria 'Café Aroma da Serra'. Assinale a correta.",a:["A exclusividade da marca é ilimitada, atingindo todas as atividades.","A marca fraca, de expressões comuns ou genéricas, não possui o atributo da exclusividade.","A tutela depende de prova do engano de consumidores específicos.","A lei admite amplamente o registro de sinal genérico ou descritivo.","Prescreve em 3 anos a ação de perdas e danos pelo uso da marca."],g:"B",c:"JT 24, tese 4. A: especialidade. C: basta a possibilidade de confusão (tese 7). D: art. 124, VI. E: 5 anos (Súmula 143)."},
+{t:"pat",o:"TJ-SC · Juiz · 2024",e:"Extinção. I. A patente se extingue se não requerida a restauração em 6 meses da extinção. II. Extingue-se a marca se o titular domiciliado no exterior não constituir procurador em 30 dias da concessão. III. Extingue-se o desenho pela falta da retribuição quinquenal, devida a partir do 2º quinquênio e paga no 5º ano.",a:["somente I;","somente III;","somente I e II;","somente II e III;","I, II e III."],g:"B",c:"III: art. 120, §1º. I: restauração em 3 meses da notificação (art. 87). II: o art. 217 exige procurador, mas não fixa esse prazo de 30 dias da concessão."},
+{t:"pat",o:"Câmara dos Deputados · 2023",e:"Licença compulsória. I. Enseja licença a exploração insuficiente por fabricação incompleta ou falta de uso integral do processo, desde que provado que a comercialização não satisfaz o mercado. II. Será concedida se verificada pelo menos uma das hipóteses: dependência, progresso técnico substancial, falta de acordo. III. Sujeita-se à licença o titular que exerça os direitos de forma abusiva ou pratique abuso de poder econômico, comprovado por decisão administrativa ou judicial.",a:["I, apenas.","I, II e III.","I e II, apenas.","III, apenas.","II e III, apenas."],g:"D",c:"III: art. 68, caput. I: funde duas hipóteses autônomas (art. 68, §1º, I e II). II: os requisitos do art. 70 são cumulativos."},
+{t:"ig",o:"Câmara dos Deputados · 2023",e:"Sobre indicação de procedência e denominação de origem, assinale a correta.",a:["A proteção à IG estende-se à sua representação gráfica ou figurativa e à representação geográfica do local cujo nome seja IG.","Denominação de origem é o nome geográfico conhecido como centro de extração, produção ou fabricação.","Nome geográfico que não seja IG não pode servir de elemento de marca.","Indicação de procedência designa produto cujas qualidades se devem exclusiva ou essencialmente ao meio geográfico.","O uso de IP ou DO é restrito aos produtores do local, exigindo-se ainda requisitos de qualidade."],g:"A",c:"Art. 179. B e D trocam os conceitos (arts. 177 e 178). C: pode, se não induzir falsa procedência (art. 181). E: qualidade só para a DO (art. 182)."},
+{t:"ig",o:"TJ-ES · Juiz · 2023",e:"Trade dress. I. É de competência federal, inclusive na nulidade de marca, por envolver o INPI. II. O prejuízo prescinde de comprovação, confundindo-se com a própria violação. III. Exige ausência de caráter funcional, distintividade, confusão ou associação e anterioridade de uso.",a:["somente I;","somente II;","somente I e III;","somente II e III;","I, II e III."],g:"D",c:"II: dano presumido pela violação. III: Info 715. I: trade dress entre particulares é estadual (Tema 950)."},
+{t:"pat",o:"TJ-ES · Juiz · 2023",e:"Sobre patentes pipeline, é correto:",a:["devem observar novidade, atividade inventiva e aplicação industrial, assegurada a data de concessão para a duração;","abrangem substâncias resultantes de transformação do núcleo atômico, concedidas como no país de origem;","a proteção vigora pelo prazo remanescente no país do primeiro pedido, até o máximo brasileiro contado do primeiro depósito no exterior;","o depósito devia ocorrer em 5 anos da carta-patente no exterior ou do início da exploração;","o pedido era publicado com manifestação em 60 dias, mesmo prazo da oposição comum."],g:"C",c:"Art. 230, §4º; JT 24, tese 18. A: não se exigem os requisitos do art. 8º (Info 550). B: núcleo atômico excluído. D: o depósito devia ocorrer em 1 ano da publicação da LPI. E: manifestação em 90 dias."},
+{t:"mar",o:"TRF1 · Juiz Federal · 2023",e:"I. É nulo o registro de marca nominativa de símbolo olímpico ou paraolímpico. II. O símbolo partidário pode ser registrado como marca, ainda que a agremiação não exerça precipuamente atividade empresarial. III. Nome civil ou patronímico exige autorização limitada e específica ao registro, classe e item.",a:["somente II;","somente III;","somente I e II;","somente I e III;","I, II e III."],g:"E",c:"I: Info 693. II: Info 702. III: Info 712."},
+{t:"pat",o:"TRF1 · Juiz Federal · 2023",e:"XYF, titular da patente da substância YUF (câncer de esôfago), descobre a 3 meses do fim do privilégio que ela trata enxaqueca e pede proteção. GWE acusa perpetuação artificial do monopólio. O juiz valida a patente, mas libera GWE para usar a substância, exceto para enxaqueca. Pretensão, acusação e decisão correspondem a:",a:["patente de segundo uso; evergreening; skinny labeling;","evergreening; patente de segundo uso; skinny labeling;","skinny labeling; evergreening; patente de segundo uso;","skinny labeling; patente de segundo uso; evergreening;","patente de segundo uso; skinny labeling; evergreening."],g:"A",c:"Pedir proteção para novo uso = segundo uso. Acusar perpetuação = evergreening. Liberar os demais usos = indicação magra."},
+{t:"ig",o:"TST · Juiz do Trabalho · 2023",e:"YYY, concorrente de XXX (curso de línguas), contrata links patrocinados usando como palavra-chave a marca registrada de XXX.",a:["YYY infringe a legislação de propriedade industrial ao eleger como palavra-chave a marca registrada de XXX;","YYY faz jus a dano moral, com prova do abalo;","não há ilícito, pois o consumidor distingue os serviços;","não há ilícito, pois o contrato com o provedor é lícito;","não há uso indevido por não se reconhecer desvio de clientela."],g:"A",c:"Infos 747 e 785: concorrência desleal por desvio de clientela, sem necessidade de prova do prejuízo."},
+{t:"pat",o:"AGE-MG · Procurador · 2022",e:"V ou F: ( ) Invenção é nova quando fora do estado da técnica, e não conta a divulgação pelo inventor nos 12 meses anteriores. ( ) Direitos de PI são bens móveis, exceto a indicação geográfica. ( ) A extensão da proteção é determinada pelas reivindicações, interpretadas com base no relatório e desenhos.",a:["F – V – F.","V – V – F.","V – F – V.","F – F – F.","F – F – V."],g:"C",c:"Arts. 11, 12 e 41. O art. 5º não excepciona a IG."},
+{t:"trat",o:"Senado · Consultor · 2022",e:"Sobre a prioridade na Convenção de Paris (revisão de Estocolmo), assinale a correta.",a:["A declaração de prioridade deve ser feita em até 180 dias do depósito em qualquer país.","Desenho depositado com prioridade baseada em modelo de utilidade: o prazo de prioridade será o fixado para os desenhos industriais.","Os países não podem exigir cópia do pedido anterior, salvo objeção em 60 dias.","Os países podem exigir cópia e outras formalidades, sem cominar perda da prioridade.","É vedado depositar MU com prioridade de patente e vice-versa."],g:"B",c:"CUP, art. 4º E(1). D: a sanção pode chegar à perda da prioridade. E: é permitido."},
+{t:"trat",o:"Senado · Consultor · 2022",e:"Pelo TRIPS, art. 1.2, propriedade intelectual abrange:",a:["marcas, IGs, desenhos, patentes e repressão à concorrência desleal;","marcas, sinais de propaganda, IGs, desenhos e patentes;","direito do autor e conexos, marcas, IGs, desenhos industriais, patentes, topografias de circuitos integrados e proteção de informação confidencial;","marcas, IGs, desenhos, patentes, informação confidencial e controle de práticas anticoncorrenciais em licenças;","direito do autor, marcas, IGs, desenhos, patentes, informação confidencial e controle de práticas em licenças."],g:"C",c:"O art. 1.2 remete às Seções 1 a 7 da Parte II. A Seção 8 (controle de práticas de concorrência desleal em contratos de licenças) existe no acordo, mas não integra o conceito de PI, por isso D e E estão erradas. A e B omitem direito do autor, topografias e informação confidencial."},
+{t:"trat",o:"Senado · Consultor · 2022",e:"Protocolo de Madri. I. A extensão alcança qualquer parte contratante, inclusive a do escritório de origem. II. O pedido de extensão deve ter menção especial no pedido internacional. III. Extensão posterior só se não decorridos 2 anos do registro.",a:["I, apenas.","II, apenas.","I e II, apenas.","I e III, apenas.","I, II e III."],g:"B",c:"Decreto 10.033/2019. I: errada, o art. 3bis proíbe a extensão para a Parte cuja Administração é a de origem. II: certa, art. 3ter, 1. III: errada, o art. 3ter, 2 admite extensão posterior sem limite de 2 anos, com efeito desde a anotação e validade até a expiração da inscrição internacional."},
+{t:"pat",o:"FIOCRUZ · 2010",e:"Estagiário contratado para o setor de pesquisa aperfeiçoou processo de produção de anticorpos, gerando pedido de patente. O direito patrimonial é do:",a:["estagiário;","empregador, em decorrência do contrato;","pesquisador do laboratório;","empregador e empregado, em coautoria;","presidente da empresa."],g:"B",c:"Arts. 88 e 92: invenção de serviço pertence ao empregador, regra aplicável ao estagiário."},
+{t:"pat",o:"FIOCRUZ · 2010",e:"I. A invenção deve ter novidade, atividade inventiva, aplicação industrial e suficiência descritiva. II. Métodos operatórios, terapêuticos ou de diagnóstico são invenções. III. O pedido refere-se a uma invenção ou grupo com único conceito inventivo. IV. Não são patenteáveis seres vivos nem microrganismos transgênicos.",a:["I e III.","II e IV.","I, III e IV.","I, II e III.","Todas."],g:"A",c:"I: arts. 8º e 24. III: art. 22. II: art. 10, VIII. IV: os microrganismos transgênicos são exceção patenteável (art. 18, III)."},
+{t:"pat",o:"Pref. Angra dos Reis · 2010",e:"Assinale a INCORRETA.",a:["Os direitos de PI são bens móveis.","A invenção exige novidade, atividade inventiva e aplicação industrial.","Invenção vigora 20 anos e MU 15 anos, contados do depósito.","O prazo para a ação de nulidade da patente é de 2 anos após o início da vigência.","A extinção da patente faz o objeto cair em domínio público."],g:"D",c:"A ação de nulidade de patente cabe a qualquer tempo da vigência (art. 56)."},
+{t:"pat",o:"FIOCRUZ · 2010",e:"Sobre pedidos de patente, assinale a correta.",a:["É permitido apresentar dados em congressos até 2 anos antes do pedido.","São patenteáveis seres vivos naturais e genoma isolados.","Será estado da técnica a divulgação nos 12 meses anteriores ao depósito.","O pedido fica em sigilo por 18 meses do depósito ou prioridade mais antiga, e depois é publicado.","A lei não admite pedido de sigilo."],g:"D",c:"Art. 30. A: graça de 12 meses. B: art. 10, IX. C: inverte o art. 12."},
+{t:"mar",o:"TJ-AM · Juiz · 2013",e:"I. Requisitos de patenteabilidade: novidade, atividade inventiva e aplicação industrial. II. A LPI protege marca, desenho, MU e invenção e reprime falsas IGs e concorrência desleal. III. Apenas o titular da marca pode licenciá-la ou zelar por ela.",a:["somente I.","somente II.","somente III.","somente I e II.","todas."],g:"D",c:"III: o art. 130 dá esses direitos ao titular e ao depositante."},
+{t:"pat",o:"SEFAZ-RJ · Auditor · 2011",e:"Sobre patentes de invenção e MU, assinale a correta.",a:["Pedido depositado e não publicado é estado da técnica desde o depósito, mesmo que nunca seja publicado.","O pedido de MU pode se referir a mais de um modelo principal.","Pedido de invenção depositado originalmente no Brasil, sem prioridade e não publicado, assegura prioridade ao posterior sobre a mesma matéria, pelo mesmo requerente ou sucessores, em 1 ano.","O pagamento para concessão deve ocorrer no prazo improrrogável de 30 dias.","Pedido de interesse da defesa nacional fica em sigilo por 18 meses e depois é publicado."],g:"C",c:"Art. 17. A: desde que venha a ser publicado (art. 11, §2º). B: um único modelo principal (art. 23). D: 60 dias + 30 (art. 38). E: tramita em caráter sigiloso (art. 75)."},
+{t:"pat",o:"TCM-RJ · Procurador · 2008",e:"Assinale a correta.",a:["A patente de invenção não pode vigorar menos de 15 anos da concessão.","A patente de invenção vigora por 20 anos, contados do depósito.","A proteção é assegurada pelo protocolo do pedido no INPI.","Dispensa-se a aplicação industrial.","Programas de computador são patenteáveis."],g:"B",c:"Art. 40. O antigo prazo mínimo era de 10 anos (e foi declarado inconstitucional)."},
+{t:"pat",o:"TJ-PE · Juiz · 2026",e:"I. Mesma invenção, autores independentes: vence quem provar o depósito mais antigo, independentemente das datas de invenção. II. A patente pode ser requerida em nome próprio, por herdeiros, sucessores, cessionário ou a quem a lei ou contrato determinar. III. Invenção conjunta: requerida por todos ou qualquer deles, com nomeação e qualificação dos demais.",a:["II, apenas;","III, apenas;","I e II, apenas;","I e III, apenas;","I, II e III."],g:"E",c:"Arts. 7º e 6º, §§2º e 3º."},
+{t:"mar",o:"TJ-PR · Juiz · 2021",e:"Ação de abstenção de uso de marca cumulada com danos, sobre expressões e sinais empregados apenas como meio de propaganda:",a:["são registráveis quando integram o estabelecimento;","não são registráveis porque já se registram com o desenho industrial;","são registráveis com uso ininterrupto por 10 anos;","não são registráveis como marca e são insuscetíveis de registro no âmbito da propriedade industrial;","são registráveis se não imitarem nome empresarial."],g:"D",c:"Art. 124, VII. A LPI de 1996 extinguiu o registro de sinal de propaganda; a proteção vem do art. 195, IV."}
+];
+let qF="all";const ANS={};
+try{Object.assign(ANS,JSON.parse(localStorage.getItem("piq")||"{}"));}catch(e){}
+function save(){try{localStorage.setItem("piq",JSON.stringify(ANS));}catch(e){}}
+const L=["A","B","C","D","E"];
+function renderQ(){
+  const list=document.getElementById("qList");
+  list.innerHTML=Q.map((q,i)=>({q,i})).filter(x=>qF==="all"||x.q.t===qF).map(({q,i})=>{
+    const a=ANS[i];
+    const opts=q.a.map((t,k)=>{let cls="opt";if(a){if(L[k]===q.g)cls+=" ok";else if(L[k]===a)cls+=" bad";}
+      return `<button class="${cls}" data-q="${i}" data-l="${L[k]}" ${a?'aria-disabled="true"':""}><span class="L">${L[k]}</span><span>${esc(t)}</span></button>`;}).join("");
+    const com=a?`<div class="coment"><span class="res" style="color:${a===q.g?"var(--ig)":"var(--crime)"}">${a===q.g?"Acertou.":"Gabarito: "+q.g+"."}</span><p>${esc(q.c)}</p></div>`:"";
+    return `<article class="q${a?" answered":""}"><div class="meta"><span class="num">${i+1}</span><span class="tag" style="color:${COL[q.t]}">${NAME[q.t]}</span><span>${esc(q.o)}</span></div><p class="enun">${esc(q.e)}</p><div class="opts">${opts}</div>${com}</article>`;
+  }).join("");
+  const done=Object.keys(ANS).length,hit=Object.keys(ANS).filter(k=>ANS[k]===Q[k].g).length;
+  document.getElementById("qScore").textContent=`${done} de ${Q.length} respondidas · ${hit} acertos`;
+}
+document.getElementById("qList").addEventListener("click",e=>{const b=e.target.closest(".opt");if(!b)return;const i=b.dataset.q;if(ANS[i])return;ANS[i]=b.dataset.l;save();renderQ();});
+document.getElementById("qFilters").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;qF=b.dataset.f;
+  document.querySelectorAll("#qFilters .chip").forEach(c=>c.setAttribute("aria-pressed",c===b));renderQ();});
+document.getElementById("qReset").addEventListener("click",()=>{for(const k in ANS)delete ANS[k];save();renderQ();});
+renderQ();
+</script>
+
+<a href="index.html" class="estante-voltar" aria-label="Voltar para a Estante">← Estante</a>
+<style>.estante-voltar{position:fixed;left:max(12px,env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9999;
+font:600 13px/1 system-ui,-apple-system,sans-serif;text-decoration:none;color:#fff;background:#1b2a4a;padding:9px 13px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.estante-voltar:focus-visible{outline:2px solid #8fa8ff;outline-offset:2px}</style>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){});}</script>
+</body></html>
