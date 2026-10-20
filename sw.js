@@ -1,5 +1,5 @@
-// Estante da Lavínia: cache offline. A versão muda a cada publicação.
-const CACHE = 'estante-202610200906';
+// Em Breve de Toga: cache offline. A versão muda a cada publicação.
+const CACHE = 'toga-202610200912';
 const FILES = ['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png',
   './competencias.html',
   './defesa-concorrencia.html',

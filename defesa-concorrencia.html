@@ -1067,7 +1067,7 @@ nav.tabs button[aria-pressed="true"]{background:var(--accent);border-color:var(-
 document.querySelectorAll('nav.tabs button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
 document.querySelectorAll('section[data-t]').forEach(function(s){s.hidden=s.dataset.t!==b.dataset.t});window.scrollTo(0,0);})});</script>
 
-<a href="index.html" class="estante-voltar" aria-label="Voltar para a Estante">← Estante</a>
+<a href="index.html" class="estante-voltar" aria-label="Voltar para o início">← Início</a>
 <style>.estante-voltar{position:fixed;left:max(12px,env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9999;
 font:600 13px/1 system-ui,-apple-system,sans-serif;text-decoration:none;color:#fff;background:#1b2a4a;padding:9px 13px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
 .estante-voltar:focus-visible{outline:2px solid #8fa8ff;outline-offset:2px}</style>
