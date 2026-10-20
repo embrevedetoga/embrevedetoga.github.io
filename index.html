@@ -1,0 +1,103 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1b2a4a">
+<link rel="apple-touch-icon" href="icons/icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Estante">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+</head><body>
+<title>Estante da Lavínia</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: cabeçalho curto, busca e filtros por área, grade de lombadas (cards) com faixa colorida da disciplina */
+:root{
+  --bg:#f3f5f8; --surface:#fff; --ink:#151d2b; --muted:#566074; --line:#d9dee7; --accent:#2343a3;
+  --emp:#0b6876; --pen:#b0261d; --con:#2343a3; --dh:#2a7339; --prev:#9a5200; --plan:#6a3a9f;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif; --body:"Source Serif 4",Georgia,serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f131a; --surface:#161c26; --ink:#e5e9f0; --muted:#9aa4b5; --line:#29313e; --accent:#8fa8ff;
+  --emp:#5cc4d1; --pen:#ff8f85; --con:#8fa8ff; --dh:#80d08f; --prev:#f0a64c; --plan:#bb9bf2; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f131a; --surface:#161c26; --ink:#e5e9f0; --muted:#9aa4b5; --line:#29313e; --accent:#8fa8ff;
+  --emp:#5cc4d1; --pen:#ff8f85; --con:#8fa8ff; --dh:#80d08f; --prev:#f0a64c; --plan:#bb9bf2; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1000px;margin:0 auto;padding-block:36px 56px;display:grid;gap:22px}
+.eyebrow{font-family:var(--mono);font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,5.5vw,3.2rem);letter-spacing:-.02em;line-height:1.05;margin:4px 0 0;text-wrap:balance}
+h1 span{color:var(--accent)}
+.lead{color:var(--muted);max-width:62ch;margin:8px 0 0}
+.stats{display:flex;flex-wrap:wrap;gap:18px;font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+.stats b{font-family:var(--display);font-size:1.3rem;color:var(--ink);font-weight:800;margin-right:4px;font-variant-numeric:tabular-nums}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+input[type=search]{font:inherit;padding:9px 13px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);flex:1 1 260px;min-width:0}
+.chip{font-family:var(--display);font-weight:600;font-size:.84rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 12px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--c,var(--muted));display:inline-block}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip:focus-visible,input:focus-visible,a.card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px}
+a.card{display:grid;grid-template-columns:8px 1fr;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;transition:transform .15s,border-color .15s}
+a.card:hover{transform:translateY(-2px);border-color:var(--c)}
+.spine{background:var(--c)}
+.body{padding:14px 16px;display:grid;gap:8px;align-content:start;min-width:0}
+.area{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--c);font-weight:500}
+.card h2{font-family:var(--display);font-weight:700;font-size:1.08rem;line-height:1.25;margin:0;text-wrap:balance}
+.card p{margin:0;font-size:.92rem;color:var(--muted)}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--mono);font-size:.74rem;color:var(--muted);margin-top:2px}
+.open{font-family:var(--display);font-weight:600;color:var(--c)}
+.empty{color:var(--muted);padding:20px 0}
+.note{font-size:.88rem;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){a.card{transition:none}a.card:hover{transform:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Materiais de estudo · Magistratura</div>
+    <h1>Estante da <span>Lavínia</span></h1>
+    <p class="lead">Todos os seus mapas e resumos jurídicos em um só lugar. Toque em um material para abrir.</p>
+  </header>
+  <div class="stats" id="stats"></div>
+  <div class="controls" id="filters"></div>
+  <div class="controls"><input type="search" id="q" placeholder="Buscar por tema, lei ou palavra" aria-label="Buscar materiais"></div>
+  <div class="grid" id="grid"></div>
+  <p class="note" id="installNote">Para instalar como app: no celular, abra o menu do navegador e toque em "Adicionar à tela de início". Depois da primeira abertura, os materiais funcionam sem internet.</p>
+</div>
+
+<script>
+const AREAS={
+  emp:["Empresarial","var(--emp)"], pen:["Penal","var(--pen)"], con:["Constitucional e Processo","var(--con)"],
+  dh:["Direitos Humanos","var(--dh)"], prev:["Previdenciário","var(--prev)"], plan:["Planejamento","var(--plan)"]
+};
+const ITEMS=[
+  {t:"Mapa da Propriedade Industrial",a:"emp",d:"Lei 9.279/96: patentes, desenho, marcas, IG, crimes, prazos, jurisprudência e 36 questões FGV.",u:"materiais/propriedade-industrial.html",dt:"2026-10-20",k:"LPI INPI marca patente trade dress"},
+  {t:"Lei 12.529/2011: Defesa da Concorrência",a:"emp",d:"Lei do CADE para a objetiva FGV, com vocabulário, questões e letra da lei.",u:"materiais/defesa-concorrencia.html",dt:"2026-10-18",k:"CADE concorrência antitruste"},
+  {t:"Mapa da Parte Especial",a:"pen",d:"Código Penal, Parte Especial, por título, capítulo e crime, com foco FGV.",u:"materiais/parte-especial.html",dt:"2026-10-20",k:"CP crimes código penal"},
+  {t:"Mapa das Competências",a:"con",d:"STF, STJ, TRFs, juízes federais e CNJ (CF, arts. 101 a 110), com fluxo recursal e pegadinhas.",u:"materiais/competencias.html",dt:"2026-10-19",k:"competência STF STJ recurso extraordinário especial"},
+  {t:"RPPS e Seguridade Social na CF",a:"prev",d:"Servidores (arts. 39 a 41) e seguridade social (arts. 194 e 195), com questões de fixação.",u:"materiais/rpps.html",dt:"2026-10-04",k:"servidor público previdência constitucional seguridade"},
+  {t:"Sistema Interamericano de Direitos Humanos",a:"dh",d:"Comissão e Corte Interamericana, procedimento, medidas de urgência e controle de convencionalidade.",u:"materiais/sistema-interamericano.html",dt:"2026-10-14",k:"CIDH Corte IDH Pacto São José convencionalidade"},
+  {t:"Plano TJSC · Juiz Substituto",a:"plan",d:"Plano de estudos compartilhado com você. Abre no Claude e exige login.",u:"https://claude.ai/artifact/MN2C6BSaMgkpCw4AaVwtgP",dt:"",k:"cronograma concurso",ext:true}
+];
+let f="all",q="";
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+const fmt=d=>d?d.split("-").reverse().join("/"):"";
+function render(){
+  const used=[...new Set(ITEMS.map(i=>i.a))];
+  document.getElementById("stats").innerHTML=`<span><b>${ITEMS.length}</b>materiais</span><span><b>${used.length}</b>áreas</span>`;
+  document.getElementById("filters").innerHTML=`<button class="chip" data-f="all" aria-pressed="${f==="all"}">Todas</button>`+
+    used.map(a=>`<button class="chip" data-f="${a}" aria-pressed="${f===a}" style="--c:${AREAS[a][1]}"><i></i>${AREAS[a][0]}</button>`).join("");
+  const nq=norm(q);
+  const rows=ITEMS.filter(i=>(f==="all"||i.a===f)&&(!nq||norm(i.t+" "+i.d+" "+i.k+" "+AREAS[i.a][0]).includes(nq)))
+    .sort((x,y)=>(y.dt||"").localeCompare(x.dt||""));
+  document.getElementById("grid").innerHTML=rows.map(i=>`<a class="card" href="${i.u}" ${i.ext?'target="_blank" rel="noopener" ':''}style="--c:${AREAS[i.a][1]}">
+    <span class="spine"></span><div class="body"><span class="area">${AREAS[i.a][0]}</span><h2>${esc(i.t)}</h2><p>${esc(i.d)}</p>
+    <div class="foot"><span>${i.ext?"Abre no Claude":(i.dt?"Atualizado "+fmt(i.dt):"")}</span><span class="open">Abrir →</span></div></div></a>`).join("")
+    ||`<p class="empty">Nenhum material encontrado.</p>`;
+}
+document.getElementById("filters").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;f=b.dataset.f;render();});
+document.getElementById("q").addEventListener("input",e=>{q=e.target.value;render();});
+render();
+</script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){});}</script></body></html>
